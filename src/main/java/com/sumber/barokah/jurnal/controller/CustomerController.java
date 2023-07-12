@@ -67,5 +67,17 @@ public class CustomerController {
 
     }
 
+    @DeleteMapping(
+            path = "/api/sb/{id}/customers",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<String> delete(@PathVariable(name = "id") String id){
+
+        customerService.delete(id);
+
+        return WebResponse.<String>builder().data("OK").build();
+
+    }
+
 
 }

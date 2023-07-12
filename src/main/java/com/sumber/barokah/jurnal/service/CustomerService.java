@@ -16,5 +16,7 @@ public interface CustomerService {
 
     CustomerResponse update(UpdateCustomerRequest request);
 
+    void delete(String id);
+
 
 }

@@ -89,6 +89,16 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
+    @Transactional
+    public void delete(String id) {
+
+        Customer cs = customerRepository.findFirstByCustomerId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+
+        customerRepository.delete(cs); // delete DB
+
+    }
+
     private CustomerResponse toCustomerResponse(Customer customer){
         return CustomerResponse.builder()
                 .customerId(customer.getCustomerId())
