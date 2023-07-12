@@ -12,8 +12,8 @@ create table customers
     name               varchar(100) not null,
     company            varchar(100),
     saldo              bigint,
-    no_handphone       varchar(20) not null,
-    email              varchar(100)  not null,
+    no_handphone       varchar(20)  not null,
+    email              varchar(100) not null,
     address            varchar(255),
     create_at          timestamp,
     update_modified_at timestamp,
@@ -70,5 +70,4 @@ describe suppliers;
 desc categories;
 desc products;
 
-
-drop table customers;
+select * from customers;

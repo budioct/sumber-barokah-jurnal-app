@@ -22,17 +22,22 @@ public class Customer {
     @Column(name = "customer_id")
     private String customerId;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "company")
     private String company;
 
+    @Column(name = "saldo")
     private Long saldo;
 
     @Column(name = "no_handphone")
     private String noHPhone;
 
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "address")
     private String address;
 
     @CreatedDate
