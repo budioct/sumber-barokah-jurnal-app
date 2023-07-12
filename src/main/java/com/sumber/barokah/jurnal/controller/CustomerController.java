@@ -3,6 +3,7 @@ package com.sumber.barokah.jurnal.controller;
 import com.sumber.barokah.jurnal.dto.WebResponse;
 import com.sumber.barokah.jurnal.dto.master.CreateCustomerRequest;
 import com.sumber.barokah.jurnal.dto.master.CustomerResponse;
+import com.sumber.barokah.jurnal.dto.master.UpdateCustomerRequest;
 import com.sumber.barokah.jurnal.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -46,6 +47,21 @@ public class CustomerController {
     public WebResponse<CustomerResponse> get(@PathVariable(name = "id") String id){
 
         CustomerResponse customerResponse = customerService.get(id);
+
+        return WebResponse.<CustomerResponse>builder().data(customerResponse).build();
+
+    }
+
+    @PutMapping(
+            path = "/api/sb/{id}/customers",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<CustomerResponse> update(@RequestBody UpdateCustomerRequest request,
+                                                @PathVariable(name = "id") String id){
+
+        request.setCustomerId(id);
+        CustomerResponse customerResponse = customerService.update(request);
 
         return WebResponse.<CustomerResponse>builder().data(customerResponse).build();
 

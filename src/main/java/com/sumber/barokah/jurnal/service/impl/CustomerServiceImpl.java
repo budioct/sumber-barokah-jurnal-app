@@ -2,6 +2,7 @@ package com.sumber.barokah.jurnal.service.impl;
 
 import com.sumber.barokah.jurnal.dto.master.CreateCustomerRequest;
 import com.sumber.barokah.jurnal.dto.master.CustomerResponse;
+import com.sumber.barokah.jurnal.dto.master.UpdateCustomerRequest;
 import com.sumber.barokah.jurnal.entity.master.Customer;
 import com.sumber.barokah.jurnal.repository.CustomerRepository;
 import com.sumber.barokah.jurnal.service.CustomerService;
@@ -65,6 +66,27 @@ public class CustomerServiceImpl implements CustomerService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
 
         return toCustomerResponse(customer);
+    }
+
+    @Transactional
+    public CustomerResponse update(UpdateCustomerRequest request) {
+
+        validationService.validate(request);
+
+        Customer cs = customerRepository.findFirstByCustomerId(request.getCustomerId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+
+        cs.setName(request.getName());
+        cs.setCompany(request.getCompany());
+        cs.setSaldo(request.getSaldo());
+        cs.setNoHPhone(request.getNoHPhone());
+        cs.setEmail(request.getEmail());
+        cs.setAddress(request.getAddress());
+
+        customerRepository.save(cs); // save DB
+
+        return toCustomerResponse(cs);
+
     }
 
     private CustomerResponse toCustomerResponse(Customer customer){
