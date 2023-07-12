@@ -11,4 +11,7 @@ public interface CustomerService {
 
     List<CustomerResponse> listCustomer();
 
+    CustomerResponse get(String id);
+
+
 }

@@ -58,6 +58,15 @@ public class CustomerServiceImpl implements CustomerService {
         return list.stream().map(this::toCustomerResponse).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public CustomerResponse get(String id) {
+
+        Customer customer = customerRepository.findFirstByCustomerId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+
+        return toCustomerResponse(customer);
+    }
+
     private CustomerResponse toCustomerResponse(Customer customer){
         return CustomerResponse.builder()
                 .customerId(customer.getCustomerId())
