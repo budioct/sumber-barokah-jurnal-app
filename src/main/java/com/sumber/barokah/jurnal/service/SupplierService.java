@@ -16,4 +16,6 @@ public interface SupplierService {
 
     SupplierResponse update(UpdateSupplierRequest request);
 
+    void delete(String id);
+
 }

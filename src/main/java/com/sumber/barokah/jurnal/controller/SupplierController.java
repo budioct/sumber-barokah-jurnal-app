@@ -69,5 +69,16 @@ public class SupplierController {
 
     }
 
+    @DeleteMapping(
+            path = "/api/sb/{id}/suppliers",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<String> delete(@PathVariable(name = "id") String id){
+
+        supplierService.delete(id);
+
+        return WebResponse.<String>builder().data("OK").build();
+
+    }
 
 }

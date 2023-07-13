@@ -88,6 +88,16 @@ public class SupplierServiceImpl implements SupplierService {
         return toSupplierResponse(sup);
     }
 
+    @Transactional
+    public void delete(String id) {
+
+        Supplier supplier = supplierRepository.findFirstBySupplierId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
+
+        supplierRepository.delete(supplier);
+
+    }
+
     private SupplierResponse toSupplierResponse(Supplier supplier) {
         return SupplierResponse.builder()
                 .supplierId(supplier.getSupplierId())
