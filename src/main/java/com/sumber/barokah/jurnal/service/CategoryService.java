@@ -11,4 +11,6 @@ public interface CategoryService {
 
     List<CategoryResponse> list();
 
+    CategoryResponse get(String id);
+
 }

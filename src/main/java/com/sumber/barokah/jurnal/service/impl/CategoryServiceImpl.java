@@ -53,6 +53,15 @@ public class CategoryServiceImpl implements CategoryService {
         return list.stream().map(this::toCategoryResponse).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public CategoryResponse get(String id) {
+
+        Category category = categoryRepository.findFirstByCategoryId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+
+        return toCategoryResponse(category);
+    }
+
     private CategoryResponse toCategoryResponse(Category category){
         return CategoryResponse.builder()
                 .categoryId(category.getCategoryId())
