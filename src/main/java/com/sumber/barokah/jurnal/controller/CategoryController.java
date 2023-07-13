@@ -3,6 +3,7 @@ package com.sumber.barokah.jurnal.controller;
 import com.sumber.barokah.jurnal.dto.WebResponse;
 import com.sumber.barokah.jurnal.dto.master.CategoryResponse;
 import com.sumber.barokah.jurnal.dto.master.CreateCategoryRequest;
+import com.sumber.barokah.jurnal.dto.master.UpdateCategoryRequest;
 import com.sumber.barokah.jurnal.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -51,6 +52,20 @@ public class CategoryController {
 
         return WebResponse.<CategoryResponse>builder().data(categoryResponse).build();
 
+    }
+
+    @PutMapping(
+            path = "/api/sb/{id}/categories",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<CategoryResponse> update(@PathVariable(name = "id") String id,
+                                                @RequestBody UpdateCategoryRequest request){
+
+        request.setCategoryId(id);
+        CategoryResponse categoryResponse = categoryService.update(request);
+
+        return WebResponse.<CategoryResponse>builder().data(categoryResponse).build();
     }
 
 

@@ -2,6 +2,7 @@ package com.sumber.barokah.jurnal.service.impl;
 
 import com.sumber.barokah.jurnal.dto.master.CategoryResponse;
 import com.sumber.barokah.jurnal.dto.master.CreateCategoryRequest;
+import com.sumber.barokah.jurnal.dto.master.UpdateCategoryRequest;
 import com.sumber.barokah.jurnal.entity.master.Category;
 import com.sumber.barokah.jurnal.repository.master.CategoryRepository;
 import com.sumber.barokah.jurnal.service.CategoryService;
@@ -36,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
         cat.setCategoryId(UUID.randomUUID().toString());
         cat.setName(request.getName());
 
-        categoryRepository.save(cat);
+        categoryRepository.save(cat); // save DB
 
         return toCategoryResponse(cat);
     }
@@ -60,6 +61,21 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
 
         return toCategoryResponse(category);
+    }
+
+    @Transactional
+    public CategoryResponse update(UpdateCategoryRequest request) {
+
+        validationService.validate(request);
+
+        Category cat = categoryRepository.findFirstByCategoryId(request.getCategoryId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+
+        cat.setName(request.getName());
+
+        categoryRepository.save(cat); // save DB
+
+        return toCategoryResponse(cat);
     }
 
     private CategoryResponse toCategoryResponse(Category category){
