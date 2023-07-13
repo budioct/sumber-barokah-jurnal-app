@@ -43,7 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<CategoryResponse> list() {
+    public List<CategoryResponse> listCategory() {
 
         List<Category> list = categoryRepository.findAll();
 

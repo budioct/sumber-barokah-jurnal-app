@@ -1,5 +1,6 @@
 package com.sumber.barokah.jurnal.dto.master;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sumber.barokah.jurnal.entity.master.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
@@ -24,6 +25,7 @@ public class CategoryResponse {
 
     private String name;
 
+    @JsonIgnore
     private List<Product> products;
 
     private Instant createAt;

@@ -36,9 +36,9 @@ public class CategoryController {
     )
     public WebResponse<List<CategoryResponse>> list() {
 
-        List<CategoryResponse> list = categoryService.list();
+        List<CategoryResponse> categoryResponses = categoryService.listCategory();
 
-        return WebResponse.<List<CategoryResponse>>builder().data(list).build();
+        return WebResponse.<List<CategoryResponse>>builder().data(categoryResponses).build();
 
     }
 

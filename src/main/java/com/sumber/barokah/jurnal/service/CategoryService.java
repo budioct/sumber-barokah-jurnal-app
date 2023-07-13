@@ -10,7 +10,7 @@ public interface CategoryService {
 
     CategoryResponse create(CreateCategoryRequest request);
 
-    List<CategoryResponse> list();
+    List<CategoryResponse> listCategory();
 
     CategoryResponse get(String id);
 
