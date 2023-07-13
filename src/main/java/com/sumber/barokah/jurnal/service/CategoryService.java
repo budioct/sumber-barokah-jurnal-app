@@ -16,4 +16,6 @@ public interface CategoryService {
 
     CategoryResponse update(UpdateCategoryRequest request);
 
+    void delete(String id);
+
 }

@@ -47,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         List<Category> list = categoryRepository.findAll();
 
-        if (Objects.isNull(list)){
+        if (Objects.isNull(list)) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Category content does not exist!");
         }
 
@@ -57,10 +57,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     public CategoryResponse get(String id) {
 
-        Category category = categoryRepository.findFirstByCategoryId(id)
+        Category cat = categoryRepository.findFirstByCategoryId(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
 
-        return toCategoryResponse(category);
+        return toCategoryResponse(cat);
     }
 
     @Transactional
@@ -78,7 +78,17 @@ public class CategoryServiceImpl implements CategoryService {
         return toCategoryResponse(cat);
     }
 
-    private CategoryResponse toCategoryResponse(Category category){
+    @Transactional
+    public void delete(String id) {
+
+        Category cat = categoryRepository.findFirstByCategoryId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+
+        categoryRepository.delete(cat);
+
+    }
+
+    private CategoryResponse toCategoryResponse(Category category) {
         return CategoryResponse.builder()
                 .categoryId(category.getCategoryId())
                 .name(category.getName())

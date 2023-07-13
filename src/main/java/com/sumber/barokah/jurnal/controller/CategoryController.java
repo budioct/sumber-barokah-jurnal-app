@@ -22,7 +22,7 @@ public class CategoryController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<CategoryResponse> create(@RequestBody CreateCategoryRequest request){
+    public WebResponse<CategoryResponse> create(@RequestBody CreateCategoryRequest request) {
 
         CategoryResponse categoryResponse = categoryService.create(request);
 
@@ -34,7 +34,7 @@ public class CategoryController {
             path = "/api/sb/categories",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<List<CategoryResponse>> list(){
+    public WebResponse<List<CategoryResponse>> list() {
 
         List<CategoryResponse> list = categoryService.list();
 
@@ -46,7 +46,7 @@ public class CategoryController {
             path = "/api/sb/{id}/categories",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<CategoryResponse> get(@PathVariable(name = "id") String id){
+    public WebResponse<CategoryResponse> get(@PathVariable(name = "id") String id) {
 
         CategoryResponse categoryResponse = categoryService.get(id);
 
@@ -60,12 +60,24 @@ public class CategoryController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<CategoryResponse> update(@PathVariable(name = "id") String id,
-                                                @RequestBody UpdateCategoryRequest request){
+                                                @RequestBody UpdateCategoryRequest request) {
 
         request.setCategoryId(id);
         CategoryResponse categoryResponse = categoryService.update(request);
 
         return WebResponse.<CategoryResponse>builder().data(categoryResponse).build();
+    }
+
+    @DeleteMapping(
+            path = "/api/sb/{id}/categories",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<String> delete(@PathVariable(name = "id") String id) {
+
+        categoryService.delete(id);
+
+        return WebResponse.<String>builder().data("OK").build();
+
     }
 
 
