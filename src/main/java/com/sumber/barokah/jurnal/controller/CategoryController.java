@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class CategoryController {
 
@@ -27,6 +29,18 @@ public class CategoryController {
         CategoryResponse categoryResponse = categoryService.create(request);
 
         return WebResponse.<CategoryResponse>builder().data(categoryResponse).build();
+
+    }
+
+    @GetMapping(
+            path = "/api/sb/categories",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<List<CategoryResponse>> list(){
+
+        List<CategoryResponse> list = categoryService.list();
+
+        return WebResponse.<List<CategoryResponse>>builder().data(list).build();
 
     }
 
