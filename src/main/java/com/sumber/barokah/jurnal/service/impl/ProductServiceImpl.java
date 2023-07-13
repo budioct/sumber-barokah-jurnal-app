@@ -14,7 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -54,6 +58,18 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(pdt);
 
         return toProductResponse(pdt);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductResponse> listProduct() {
+
+        List<Product> list = productRepository.findAll();
+
+        if (Objects.isNull(list)){
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Customer content does not exist!");
+        }
+
+        return list.stream().map(this::toProductResponse).collect(Collectors.toList());
     }
 
     private ProductResponse toProductResponse(Product product){

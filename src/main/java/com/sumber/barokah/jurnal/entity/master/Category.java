@@ -34,6 +34,7 @@ public class Category {
     @Column(name = "update_modified_at")
     private Instant updateModifiedAt;
 
+    // @JsonIgnore // digunakan untuk menyelesaikan rekursi Tak Terbatas (StackOverflowError)
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 
