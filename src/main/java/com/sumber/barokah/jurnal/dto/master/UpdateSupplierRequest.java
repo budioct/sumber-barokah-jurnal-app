@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateSupplierRequest {
+public class UpdateSupplierRequest {
+
+    private String supplierId;
 
     @NotBlank
     @Size(max = 100)

@@ -2,6 +2,7 @@ package com.sumber.barokah.jurnal.service.impl;
 
 import com.sumber.barokah.jurnal.dto.master.CreateSupplierRequest;
 import com.sumber.barokah.jurnal.dto.master.SupplierResponse;
+import com.sumber.barokah.jurnal.dto.master.UpdateSupplierRequest;
 import com.sumber.barokah.jurnal.entity.master.Supplier;
 import com.sumber.barokah.jurnal.repository.master.SupplierRepository;
 import com.sumber.barokah.jurnal.service.SupplierService;
@@ -37,9 +38,8 @@ public class SupplierServiceImpl implements SupplierService {
         sup.setName(request.getName());
         sup.setCompany(request.getCompany());
         sup.setSaldo(request.getSaldo());
-        sup.setCompany(request.getCompany());
-        sup.setEmail(request.getEmail());
         sup.setNoHPhone(request.getNoHPhone());
+        sup.setEmail(request.getEmail());
         sup.setAddress(request.getAddress());
 
         supplierRepository.save(sup); // save DB
@@ -52,7 +52,7 @@ public class SupplierServiceImpl implements SupplierService {
 
         List<Supplier> list = supplierRepository.findAll();
 
-        if (Objects.isNull(list)){
+        if (Objects.isNull(list)) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Supplier content does not exist!");
         }
 
@@ -68,7 +68,27 @@ public class SupplierServiceImpl implements SupplierService {
         return toSupplierResponse(supplier);
     }
 
-    private SupplierResponse toSupplierResponse(Supplier supplier){
+    @Transactional
+    public SupplierResponse update(UpdateSupplierRequest request) {
+
+        validationService.validate(request);
+
+        Supplier sup = supplierRepository.findFirstBySupplierId(request.getSupplierId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
+
+        sup.setName(request.getName());
+        sup.setCompany(request.getCompany());
+        sup.setSaldo(request.getSaldo());
+        sup.setNoHPhone(request.getNoHPhone());
+        sup.setEmail(request.getEmail());
+        sup.setAddress(request.getAddress());
+
+        supplierRepository.save(sup); // save DB
+
+        return toSupplierResponse(sup);
+    }
+
+    private SupplierResponse toSupplierResponse(Supplier supplier) {
         return SupplierResponse.builder()
                 .supplierId(supplier.getSupplierId())
                 .name(supplier.getName())
@@ -78,6 +98,8 @@ public class SupplierServiceImpl implements SupplierService {
                 .email(supplier.getEmail())
                 .noHPhone(supplier.getNoHPhone())
                 .address(supplier.getAddress())
+                .createAt(supplier.getCreateAt())
+                .updateModifiedAt(supplier.getUpdateModifiedAt())
                 .build();
     }
 

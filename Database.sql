@@ -71,3 +71,4 @@ desc categories;
 desc products;
 
 select * from customers;
+select * from suppliers;
