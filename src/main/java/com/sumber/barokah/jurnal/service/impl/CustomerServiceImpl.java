@@ -4,7 +4,7 @@ import com.sumber.barokah.jurnal.dto.master.CreateCustomerRequest;
 import com.sumber.barokah.jurnal.dto.master.CustomerResponse;
 import com.sumber.barokah.jurnal.dto.master.UpdateCustomerRequest;
 import com.sumber.barokah.jurnal.entity.master.Customer;
-import com.sumber.barokah.jurnal.repository.CustomerRepository;
+import com.sumber.barokah.jurnal.repository.master.CustomerRepository;
 import com.sumber.barokah.jurnal.service.CustomerService;
 import com.sumber.barokah.jurnal.service.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
