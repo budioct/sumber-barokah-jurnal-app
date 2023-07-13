@@ -59,6 +59,15 @@ public class SupplierServiceImpl implements SupplierService {
         return list.stream().map(this::toSupplierResponse).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public SupplierResponse get(String id) {
+
+        Supplier supplier = supplierRepository.findFirstBySupplierId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
+
+        return toSupplierResponse(supplier);
+    }
+
     private SupplierResponse toSupplierResponse(Supplier supplier){
         return SupplierResponse.builder()
                 .supplierId(supplier.getSupplierId())

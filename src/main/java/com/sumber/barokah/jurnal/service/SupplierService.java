@@ -11,4 +11,6 @@ public interface SupplierService {
 
     List<SupplierResponse> list();
 
+    SupplierResponse get(String id);
+
 }

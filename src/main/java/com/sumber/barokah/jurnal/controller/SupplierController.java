@@ -6,10 +6,7 @@ import com.sumber.barokah.jurnal.dto.master.SupplierResponse;
 import com.sumber.barokah.jurnal.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,6 +38,18 @@ public class SupplierController {
         List<SupplierResponse> list = supplierService.list();
 
         return WebResponse.<List<SupplierResponse>>builder().data(list).build();
+
+    }
+
+    @GetMapping(
+            path = "/api/sb/{id}/suppliers",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<SupplierResponse> get(@PathVariable(name = "id") String id) {
+
+        SupplierResponse supplierResponse = supplierService.get(id);
+
+        return WebResponse.<SupplierResponse>builder().data(supplierResponse).build();
 
     }
 
