@@ -9,4 +9,6 @@ public interface SupplierService {
 
     SupplierResponse create(CreateSupplierRequest request);
 
+    List<SupplierResponse> list();
+
 }
