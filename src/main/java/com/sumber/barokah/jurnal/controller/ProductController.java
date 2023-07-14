@@ -3,6 +3,7 @@ package com.sumber.barokah.jurnal.controller;
 import com.sumber.barokah.jurnal.dto.WebResponse;
 import com.sumber.barokah.jurnal.dto.master.CreateProductRequest;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
+import com.sumber.barokah.jurnal.dto.master.UpdateProductRequest;
 import com.sumber.barokah.jurnal.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -50,6 +51,24 @@ public class ProductController {
                                             @PathVariable(name = "productId") String productId){
 
         ProductResponse productResponse = productService.get(categoryId, productId);
+
+        return WebResponse.<ProductResponse>builder().data(productResponse).build();
+
+    }
+
+    @PutMapping(
+            path = "/api/sb/categories/{categoryId}/products/{productId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<ProductResponse> update(@PathVariable(name = "categoryId") String categoryId,
+                                               @PathVariable(name = "productId") String productId,
+                                               @RequestBody UpdateProductRequest request){
+
+        request.setCategoryId(categoryId);
+        request.setProductId(productId);
+
+        ProductResponse productResponse = productService.update(request);
 
         return WebResponse.<ProductResponse>builder().data(productResponse).build();
 

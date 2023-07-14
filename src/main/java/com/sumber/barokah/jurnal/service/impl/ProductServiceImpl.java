@@ -2,6 +2,7 @@ package com.sumber.barokah.jurnal.service.impl;
 
 import com.sumber.barokah.jurnal.dto.master.CreateProductRequest;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
+import com.sumber.barokah.jurnal.dto.master.UpdateProductRequest;
 import com.sumber.barokah.jurnal.entity.master.Category;
 import com.sumber.barokah.jurnal.entity.master.Product;
 import com.sumber.barokah.jurnal.repository.master.CategoryRepository;
@@ -44,6 +45,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product pdt = new Product();
         pdt.setProductId(UUID.randomUUID().toString());
+        pdt.setCategory(category);
         pdt.setProductCode(request.getProductCode());
         pdt.setName(request.getName());
         pdt.setQuantity(request.getQuantity());
@@ -55,9 +57,8 @@ public class ProductServiceImpl implements ProductService {
         pdt.setSellingPrice(request.getSellingPrice());
         pdt.setItemType(request.getItemType());
         pdt.setDescription(request.getDescription());
-        pdt.setCategory(category);
 
-        productRepository.save(pdt);
+        productRepository.save(pdt); // save DB
 
         return toProductResponse(pdt);
     }
@@ -80,13 +81,44 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepository.findFirstByCategoryId(categoryId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category is not found"));
 
-        log.info("productId: {}", productId);
+        //log.info("productId: {}", productId);
         Product product = productRepository.findFirstByCategoryAndProductId(category, productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found"));
 
-        log.info("product: {}", product.getProductId());
+        //log.info("product: {}", product.getProductId());
 
         return toProductResponse(product);
+    }
+
+    @Transactional
+    public ProductResponse update(UpdateProductRequest request) {
+
+        validationService.validate(request);
+
+        Category category = categoryRepository.findFirstByCategoryId(request.getCategoryId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category is not found"));
+
+        Product pdt = productRepository.findFirstByCategoryAndProductId(category, request.getProductId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found"));
+
+        log.info("category id= {}", category.getCategoryId());
+        log.info("product  id= {}", pdt.getProductId());
+
+        pdt.setProductCode(request.getProductCode());
+        pdt.setName(request.getName());
+        pdt.setQuantity(request.getQuantity());
+        pdt.setMinimumLimit(request.getMinimumLimit());
+        pdt.setUnit(request.getUnit());
+        pdt.setAveragePrice(request.getAveragePrice());
+        pdt.setLastPurchasePrice(request.getLastPurchasePrice());
+        pdt.setPurchasePrice(request.getPurchasePrice());
+        pdt.setSellingPrice(request.getSellingPrice());
+        pdt.setItemType(request.getItemType());
+        pdt.setDescription(request.getDescription());
+
+        productRepository.save(pdt); // save DB
+
+        return toProductResponse(pdt);
     }
 
     private ProductResponse toProductResponse(Product product){
