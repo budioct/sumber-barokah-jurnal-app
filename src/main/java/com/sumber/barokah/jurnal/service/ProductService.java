@@ -11,4 +11,6 @@ public interface ProductService {
 
     List<ProductResponse> listProduct();
 
+    ProductResponse get(String categoryId, String productId);
+
 }

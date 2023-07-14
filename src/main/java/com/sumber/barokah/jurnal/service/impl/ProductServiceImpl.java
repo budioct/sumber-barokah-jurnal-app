@@ -8,6 +8,7 @@ import com.sumber.barokah.jurnal.repository.master.CategoryRepository;
 import com.sumber.barokah.jurnal.repository.master.ProductRepository;
 import com.sumber.barokah.jurnal.service.ProductService;
 import com.sumber.barokah.jurnal.service.ValidationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -66,10 +68,25 @@ public class ProductServiceImpl implements ProductService {
         List<Product> list = productRepository.findAll();
 
         if (Objects.isNull(list)){
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Customer content does not exist!");
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Product content does not exist!");
         }
 
         return list.stream().map(this::toProductResponse).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public ProductResponse get(String categoryId, String productId) {
+
+        Category category = categoryRepository.findFirstByCategoryId(categoryId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category is not found"));
+
+        log.info("productId: {}", productId);
+        Product product = productRepository.findFirstByCategoryAndProductId(category, productId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found"));
+
+        log.info("product: {}", product.getProductId());
+
+        return toProductResponse(product);
     }
 
     private ProductResponse toProductResponse(Product product){

@@ -22,7 +22,7 @@ public class ProductController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<ProductResponse> create(@PathVariable(name = "id") String id,
-                                               @RequestBody CreateProductRequest request){
+                                               @RequestBody CreateProductRequest request) {
 
         request.setCategoryId(id);
         ProductResponse productResponse = productService.create(request);
@@ -34,12 +34,26 @@ public class ProductController {
             path = "/api/sb/products",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<List<ProductResponse>> list(){
+    public WebResponse<List<ProductResponse>> list() {
 
         List<ProductResponse> productResponses = productService.listProduct();
 
         return WebResponse.<List<ProductResponse>>builder().data(productResponses).build();
 
     }
+
+    @GetMapping(
+            path = "/api/sb/categories/{categoryId}/products/{productId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<ProductResponse> get(@PathVariable(name = "categoryId") String categoryId,
+                                            @PathVariable(name = "productId") String productId){
+
+        ProductResponse productResponse = productService.get(categoryId, productId);
+
+        return WebResponse.<ProductResponse>builder().data(productResponse).build();
+
+    }
+
 
 }
