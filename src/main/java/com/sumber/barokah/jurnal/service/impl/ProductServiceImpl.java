@@ -121,6 +121,22 @@ public class ProductServiceImpl implements ProductService {
         return toProductResponse(pdt);
     }
 
+    @Transactional
+    public void delete(String categoryId, String productId) {
+
+        Category category = categoryRepository.findFirstByCategoryId(categoryId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category is not found"));
+
+        Product pdt = productRepository.findFirstByCategoryAndProductId(category, productId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found"));
+
+        log.info("category id= {}", category.getCategoryId());
+        log.info("product  id= {}", pdt.getProductId());
+
+        productRepository.delete(pdt); // proses DB
+
+    }
+
     private ProductResponse toProductResponse(Product product){
         return ProductResponse.builder()
                 .productId(product.getProductId())

@@ -74,5 +74,18 @@ public class ProductController {
 
     }
 
+    @DeleteMapping(
+            path = "/api/sb/categories/{categoryId}/products/{productId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<String> delete(@PathVariable(name = "categoryId") String categoryId,
+                                      @PathVariable(name = "productId") String productId){
+
+        productService.delete(categoryId, productId);
+
+        return WebResponse.<String>builder().data("OK").build();
+
+    }
+
 
 }
