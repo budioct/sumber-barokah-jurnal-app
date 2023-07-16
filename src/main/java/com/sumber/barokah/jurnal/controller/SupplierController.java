@@ -5,7 +5,9 @@ import com.sumber.barokah.jurnal.dto.master.CreateSupplierRequest;
 import com.sumber.barokah.jurnal.dto.master.SupplierResponse;
 import com.sumber.barokah.jurnal.dto.master.UpdateSupplierRequest;
 import com.sumber.barokah.jurnal.service.SupplierService;
+import com.sumber.barokah.jurnal.utilities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +28,12 @@ public class SupplierController {
 
         SupplierResponse supplierResponse = supplierService.create(request);
 
-        return WebResponse.<SupplierResponse>builder().data(supplierResponse).build();
+        return WebResponse.<SupplierResponse>builder()
+                .data(supplierResponse)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.CREATE_MESSAGE)
+                .build();
 
     }
 
@@ -38,7 +45,12 @@ public class SupplierController {
 
         List<SupplierResponse> list = supplierService.list();
 
-        return WebResponse.<List<SupplierResponse>>builder().data(list).build();
+        return WebResponse.<List<SupplierResponse>>builder()
+                .data(list)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.ITEM_EXIST_MESSAGE)
+                .build();
 
     }
 
@@ -50,7 +62,12 @@ public class SupplierController {
 
         SupplierResponse supplierResponse = supplierService.get(id);
 
-        return WebResponse.<SupplierResponse>builder().data(supplierResponse).build();
+        return WebResponse.<SupplierResponse>builder()
+                .data(supplierResponse)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.ITEM_EXIST_MESSAGE)
+                .build();
 
     }
 
@@ -65,7 +82,12 @@ public class SupplierController {
         request.setSupplierId(id);
         SupplierResponse supplierResponse = supplierService.update(request);
 
-        return WebResponse.<SupplierResponse>builder().data(supplierResponse).build();
+        return WebResponse.<SupplierResponse>builder()
+                .data(supplierResponse)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.UPDATE_MESSAGE)
+                .build();
 
     }
 
@@ -77,7 +99,12 @@ public class SupplierController {
 
         supplierService.delete(id);
 
-        return WebResponse.<String>builder().data("OK").build();
+        return WebResponse.<String>builder()
+                .data("")
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.DELETE_MESSAGE)
+                .build();
 
     }
 

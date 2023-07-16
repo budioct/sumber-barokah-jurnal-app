@@ -33,8 +33,8 @@ public class CustomerController {
 
         return WebResponse.<CustomerResponse>builder()
                 .data(customerResponse)
-                .status(HttpStatus.CREATED)
-                .status_code(Constants.CREATED)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
                 .message(Constants.CREATE_MESSAGE)
                 .build();
     }
