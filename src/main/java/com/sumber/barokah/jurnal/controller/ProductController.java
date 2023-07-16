@@ -5,7 +5,9 @@ import com.sumber.barokah.jurnal.dto.master.CreateProductRequest;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
 import com.sumber.barokah.jurnal.dto.master.UpdateProductRequest;
 import com.sumber.barokah.jurnal.service.ProductService;
+import com.sumber.barokah.jurnal.utilities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +30,12 @@ public class ProductController {
         request.setCategoryId(id);
         ProductResponse productResponse = productService.create(request);
 
-        return WebResponse.<ProductResponse>builder().data(productResponse).build();
+        return WebResponse.<ProductResponse>builder()
+                .data(productResponse)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.CREATE_MESSAGE)
+                .build();
     }
 
     @GetMapping(
@@ -39,7 +46,12 @@ public class ProductController {
 
         List<ProductResponse> productResponses = productService.listProduct();
 
-        return WebResponse.<List<ProductResponse>>builder().data(productResponses).build();
+        return WebResponse.<List<ProductResponse>>builder()
+                .data(productResponses)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.ITEM_EXIST_MESSAGE)
+                .build();
 
     }
 
@@ -52,7 +64,12 @@ public class ProductController {
 
         ProductResponse productResponse = productService.get(categoryId, productId);
 
-        return WebResponse.<ProductResponse>builder().data(productResponse).build();
+        return WebResponse.<ProductResponse>builder()
+                .data(productResponse)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.ITEM_EXIST_MESSAGE)
+                .build();
 
     }
 
@@ -70,7 +87,12 @@ public class ProductController {
 
         ProductResponse productResponse = productService.update(request);
 
-        return WebResponse.<ProductResponse>builder().data(productResponse).build();
+        return WebResponse.<ProductResponse>builder()
+                .data(productResponse)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.UPDATE_MESSAGE)
+                .build();
 
     }
 
@@ -83,7 +105,12 @@ public class ProductController {
 
         productService.delete(categoryId, productId);
 
-        return WebResponse.<String>builder().data("OK").build();
+        return WebResponse.<String>builder()
+                .data("")
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.DELETE_MESSAGE)
+                .build();
 
     }
 
