@@ -25,7 +25,7 @@ public class ProductResponse {
 
     private Integer minimumLimit;
 
-    private Integer unit;
+    private String unit;
 
     private Long averagePrice;
 

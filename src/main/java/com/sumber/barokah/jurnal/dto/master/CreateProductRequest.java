@@ -27,7 +27,7 @@ public class CreateProductRequest {
 
     private Integer minimumLimit;
 
-    private Integer unit;
+    private String unit;
 
     private Long averagePrice;
 

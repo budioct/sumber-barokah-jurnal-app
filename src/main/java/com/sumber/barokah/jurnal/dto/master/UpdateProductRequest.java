@@ -33,7 +33,7 @@ public class UpdateProductRequest {
 
     private Integer minimumLimit;
 
-    private Integer unit;
+    private String unit;
 
     private Long averagePrice;
 

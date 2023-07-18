@@ -1,5 +1,7 @@
 package com.sumber.barokah.jurnal.entity.master;
 
+import com.sumber.barokah.jurnal.entity.transaksi.JurnalPembelian;
+import com.sumber.barokah.jurnal.entity.transaksi.JurnalPenjualan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,7 +34,7 @@ public class Product {
     @Column(name = "minimum_limit")
     private Integer minimumLimit;
 
-    private Integer unit;
+    private String unit; // buah, kg, lusin, groos, kodi, rim, batang
 
     @Column(name = "average_price")
     private Long averagePrice;
@@ -51,6 +53,9 @@ public class Product {
 
     private String description;
 
+    // discount
+    // pajak
+
     @CreatedDate
     @Column(name = "create_at")
     private Instant createAt;
@@ -62,6 +67,14 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    private JurnalPembelian jurnalPembelian;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    private JurnalPenjualan jurnalPenjualan;
 
 
 }

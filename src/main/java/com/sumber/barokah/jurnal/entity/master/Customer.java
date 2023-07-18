@@ -1,5 +1,6 @@
 package com.sumber.barokah.jurnal.entity.master;
 
+import com.sumber.barokah.jurnal.entity.transaksi.JurnalPenjualan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -47,5 +49,8 @@ public class Customer {
     @LastModifiedDate
     @Column(name = "update_modified_at")
     private Instant updateModifiedAt;
+
+    @OneToMany(mappedBy = "customer")
+    private List<JurnalPenjualan> jurnalPenjualans;
 
 }

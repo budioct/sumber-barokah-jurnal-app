@@ -1,5 +1,7 @@
 package com.sumber.barokah.jurnal.entity.transaksi;
 
+import com.sumber.barokah.jurnal.entity.master.Product;
+import com.sumber.barokah.jurnal.entity.master.Supplier;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,22 +21,6 @@ import java.time.LocalDateTime;
 @Table(name = "jurnal_pembelian")
 @EntityListeners({AuditingEntityListener.class})
 public class JurnalPembelian {
-
-    /**
-     * jurnal_pembelian_id,varchar(100),NO,PRI,,""
-     * no_faktur,varchar(100),YES,"",,""
-     * tanggal_transaksi,timestamp,YES,"",,""
-     * tanggal_jatuh_tempo,timestamp,YES,"",,""
-     * status,varchar(100),YES,"",,""
-     * sisa_tagihan,bigint,YES,"",,""
-     * jumlah_total,bigint,YES,"",,""
-     * no_transaksi,varchar(100),YES,"",,""
-     * tags,varchar(100),YES,"",,""
-     * supplier_id,varchar(100),NO,MUL,,""
-     * product_id,varchar(100),NO,MUL,,""
-     * create_at,timestamp,YES,"",,""
-     * update_modified_at,timestamp,YES,"",,""
-     */
 
     @Id
     @Column(name = "jurnal_pembelian_id")
@@ -72,7 +59,13 @@ public class JurnalPembelian {
     private Instant updateModifiedAt;
 
     // relation suppliers
+    @ManyToOne
+    @JoinColumn(name = "supplier_id", referencedColumnName = "supplier_id")
+    private Supplier supplier;
+
     // relation product
+    @OneToMany(mappedBy = "jurnalPembelian")
+    private List<Product> products;
 
 
 }

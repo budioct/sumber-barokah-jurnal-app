@@ -68,21 +68,18 @@ create table products
     foreign key fk_products_categories (category_id) REFERENCES categories (category_id)
 ) engine = InnoDB;
 
-show
-    tables;
+alter table products modify unit varchar(100);
+
+show tables;
 describe customers;
 describe suppliers;
 desc categories;
 desc products;
 
-select *
-from customers;
-select *
-from suppliers;
-select *
-from categories;
-select *
-from products;
+select * from customers;
+select * from suppliers;
+select * from categories;
+select * from products;
 
 create table jurnal_pembelian
 (
