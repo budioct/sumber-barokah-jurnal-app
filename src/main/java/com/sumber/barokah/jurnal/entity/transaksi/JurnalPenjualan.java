@@ -74,6 +74,6 @@ public class JurnalPenjualan {
             joinColumns = @JoinColumn(name = "jurnal_penjualan_id", referencedColumnName = "jurnal_penjualan_id"),
             inverseJoinColumns = @JoinColumn(name = "pembayaran_id", referencedColumnName = "pembayaran_id")
     )
-    private Set<Pembayaran> likes1;
+    private List<Pembayaran> likes1;
 
 }

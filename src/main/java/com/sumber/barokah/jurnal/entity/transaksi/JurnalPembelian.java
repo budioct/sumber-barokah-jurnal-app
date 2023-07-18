@@ -71,9 +71,9 @@ public class JurnalPembelian {
     @ManyToMany
     @JoinTable(
             name = "jurnal_pembelian_like_pembayaran",
-            joinColumns = @JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_penjualan_id"),
+            joinColumns = @JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id"),
             inverseJoinColumns = @JoinColumn(name = "pembayaran_id", referencedColumnName = "pembayaran_id")
     )
-    private Set<Pembayaran> likes0;
+    private List<Pembayaran> likes0;
 
 }

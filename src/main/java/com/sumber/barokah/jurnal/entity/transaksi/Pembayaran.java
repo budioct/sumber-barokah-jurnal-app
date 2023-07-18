@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -42,9 +43,9 @@ public class Pembayaran {
     private Instant updateModifiedAt;
 
     @ManyToMany(mappedBy = "likes0")
-    private Set<JurnalPembelian> jurnalPembeliansLikeBy;
+    private List<JurnalPembelian> jurnalPembeliansLikeBy;
 
     @ManyToMany(mappedBy = "likes1")
-    private Set<JurnalPenjualan> jurnalPenjualansLikeBy;
+    private List<JurnalPenjualan> jurnalPenjualansLikeBy;
 
 }
