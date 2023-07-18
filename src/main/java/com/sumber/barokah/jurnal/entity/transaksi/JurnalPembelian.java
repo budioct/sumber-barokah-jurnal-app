@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -67,5 +68,12 @@ public class JurnalPembelian {
     @OneToMany(mappedBy = "jurnalPembelian")
     private List<Product> products;
 
+    @ManyToMany
+    @JoinTable(
+            name = "jurnal_pembelian_like_pembayaran",
+            joinColumns = @JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_penjualan_id"),
+            inverseJoinColumns = @JoinColumn(name = "pembayaran_id", referencedColumnName = "pembayaran_id")
+    )
+    private Set<Pembayaran> likes0;
 
 }
