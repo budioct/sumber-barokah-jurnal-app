@@ -98,13 +98,24 @@ create table jurnal_pembelian
     no_transaksi        varchar(100),
     tags                varchar(100),
     supplier_id         varchar(100) not null,
-    product_id          varchar(100) not null,
+#     product_id          varchar(100) not null,
     create_at           timestamp,
     update_modified_at  timestamp,
     primary key (jurnal_pembelian_id),
-    foreign key fk_jurnalumum_suppliers (supplier_id) REFERENCES suppliers (supplier_id),
-    foreign key fk_jurnalumum_product (product_id) REFERENCES products (product_id)
+    foreign key fk_jurnalumum_suppliers (supplier_id) REFERENCES suppliers (supplier_id)
+#     foreign key fk_jurnalumum_product (product_id) REFERENCES products (product_id)
 ) engine = InnoDB;
+
+drop table jurnal_pembelian;
+
+create table jurnal_pembelian_like_product
+(
+    jurnal_pembelian_id varchar(100) not null,
+    product_id       varchar(100) not null,
+    foreign key fk_jurnalpembelian_like_product (jurnal_pembelian_id) references jurnal_pembelian (jurnal_pembelian_id),
+    foreign key fk_jurnalpembelian_pembelian_like_pembayaran (product_id) references products (product_id),
+    primary key (jurnal_pembelian_id, product_id)
+) engine InnoDB;
 
 create table jurnal_penjualan
 (
@@ -127,6 +138,7 @@ create table jurnal_penjualan
 ) engine = InnoDB;
 
 desc jurnal_pembelian;
+select * from jurnal_pembelian;
 desc jurnal_penjualan;
 
 select *
@@ -182,7 +194,15 @@ create table jurnal_penjualan_like_pembayaran
     primary key (jurnal_penjualan_id, pembayaran_id)
 ) engine InnoDB;
 
+show tables;
+drop table pembayaran;
+drop table jurnal_pembelian_like_pembayaran;
+drop table jurnal_penjualan;
+drop table jurnal_penjualan_like_pembayaran;
 
+select * from jurnal_pembelian;
+select * from jurnal_pembelian_like_product;
+select * from products;
 
 
 
