@@ -42,10 +42,10 @@ public class Pembayaran {
     @Column(name = "update_modified_at")
     private Instant updateModifiedAt;
 
-    @ManyToMany(mappedBy = "likes0")
-    private List<JurnalPembelian> jurnalPembeliansLikeBy;
+    //@ManyToMany(mappedBy = "likes0")
+    //private List<JurnalPembelian> jurnalPembeliansLikeBy;
 
-    @ManyToMany(mappedBy = "likes1")
-    private List<JurnalPenjualan> jurnalPenjualansLikeBy;
+    //@ManyToMany(mappedBy = "likes1")
+    //private List<JurnalPenjualan> jurnalPenjualansLikeBy;
 
 }

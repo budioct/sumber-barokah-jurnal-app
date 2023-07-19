@@ -60,20 +60,21 @@ public class JurnalPenjualan {
     private Instant updateModifiedAt;
 
     // relation customers
-    @ManyToOne
-    @JoinColumn(name = "customers_id", referencedColumnName = "customers_id")
-    private Customer customer;
+    //@ManyToOne
+    //@JoinColumn(name = "customers_id", referencedColumnName = "customer_id")
+    //private Customer customer;
 
     // relation product
-    @OneToMany(mappedBy = "jurnalPenjualan")
-    private List<Product> products;
+    //@OneToMany(mappedBy = "jurnalPenjualan")
+    //@JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    //private List<Product> products;
 
-    @ManyToMany
-    @JoinTable(
-            name = "jurnal_penjualan_like_pembayaran",
-            joinColumns = @JoinColumn(name = "jurnal_penjualan_id", referencedColumnName = "jurnal_penjualan_id"),
-            inverseJoinColumns = @JoinColumn(name = "pembayaran_id", referencedColumnName = "pembayaran_id")
-    )
-    private List<Pembayaran> likes1;
+    //@ManyToMany
+    //@JoinTable(
+    //        name = "jurnal_penjualan_like_pembayaran",
+    //        joinColumns = @JoinColumn(name = "jurnal_penjualan_id", referencedColumnName = "jurnal_penjualan_id"),
+    //        inverseJoinColumns = @JoinColumn(name = "pembayaran_id", referencedColumnName = "pembayaran_id")
+    //)
+    //private List<Pembayaran> likes1;
 
 }
