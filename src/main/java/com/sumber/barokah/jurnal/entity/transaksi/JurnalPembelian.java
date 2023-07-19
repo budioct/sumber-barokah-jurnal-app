@@ -1,5 +1,8 @@
 package com.sumber.barokah.jurnal.entity.transaksi;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sumber.barokah.jurnal.entity.master.Product;
 import com.sumber.barokah.jurnal.entity.master.Supplier;
 import jakarta.persistence.*;
@@ -9,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -65,15 +69,21 @@ public class JurnalPembelian {
     private Supplier supplier;
 
     // relation product
-    @OneToMany(mappedBy = "jurnalPembelian")
-    private List<Product> products;
-
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
-            name = "jurnal_pembelian_like_pembayaran",
+            name = "jurnal_pembelian_like_product",
             joinColumns = @JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id"),
-            inverseJoinColumns = @JoinColumn(name = "pembayaran_id", referencedColumnName = "pembayaran_id")
+            inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     )
-    private List<Pembayaran> likes0;
+    private List<Product> like_product;
+
+    //@ManyToMany
+    //@JoinTable(
+    //        name = "jurnal_pembelian_like_pembayaran",
+    //        joinColumns = @JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id"),
+    //        inverseJoinColumns = @JoinColumn(name = "pembayaran_id", referencedColumnName = "pembayaran_id")
+    //)
+    //private List<Pembayaran> likes0;
 
 }
