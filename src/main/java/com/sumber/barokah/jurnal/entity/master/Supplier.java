@@ -1,5 +1,6 @@
 package com.sumber.barokah.jurnal.entity.master;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sumber.barokah.jurnal.entity.transaksi.JurnalPembelian;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -46,6 +47,7 @@ public class Supplier {
     private Instant updateModifiedAt;
 
     // relation jurnal pembelian
+    @JsonIgnore
     @OneToMany(mappedBy = "supplier")
     private List<JurnalPembelian> jurnalPembelians;
 

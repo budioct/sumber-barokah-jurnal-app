@@ -1,5 +1,7 @@
 package com.sumber.barokah.jurnal.entity.master;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sumber.barokah.jurnal.entity.transaksi.JurnalPembelian;
 import com.sumber.barokah.jurnal.entity.transaksi.JurnalPenjualan;
 import jakarta.persistence.*;
@@ -9,9 +11,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.List;
 
+@Component
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -64,17 +69,17 @@ public class Product {
     @Column(name = "update_modified_at")
     private Instant updateModifiedAt;
 
+    //@JsonIgnore
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
-    private JurnalPembelian jurnalPembelian;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "like_product")
+    private List<JurnalPembelian> like_jurnal_pembelian;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
-    private JurnalPenjualan jurnalPenjualan;
+    //@ManyToOne
+    //private JurnalPenjualan jurnalPenjualan;
 
 
 }

@@ -50,7 +50,7 @@ public class Customer {
     @Column(name = "update_modified_at")
     private Instant updateModifiedAt;
 
-    @OneToMany(mappedBy = "customer")
-    private List<JurnalPenjualan> jurnalPenjualans;
+    //@OneToMany(mappedBy = "customer")
+    //private List<JurnalPenjualan> jurnalPenjualans;
 
 }

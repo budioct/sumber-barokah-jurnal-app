@@ -1,4 +1,4 @@
-package com.sumber.barokah.jurnal.controller;
+package com.sumber.barokah.jurnal.controller.master;
 
 import com.sumber.barokah.jurnal.dto.WebResponse;
 import com.sumber.barokah.jurnal.dto.master.CategoryResponse;

@@ -56,6 +56,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         return list.stream().map(this::toCustomerResponse).collect(Collectors.toList());
+
     }
 
     @Transactional(readOnly = true)

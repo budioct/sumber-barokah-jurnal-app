@@ -1,5 +1,6 @@
 package com.sumber.barokah.jurnal.dto.master;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CreateProductRequest {
+
+    //@JsonIgnore
+    private String productId;
 
     @NotBlank
     private String categoryId;
