@@ -87,6 +87,15 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
         return list.stream().map(this::toJurnalPembelianRepository).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public JurnalPembelianResponse get(String id) {
+
+        JurnalPembelian jp = jurnalPembelianRepository.findFirstByJurnalPembelianId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian not found"));
+
+        return toJurnalPembelianRepository(jp);
+    }
+
     private JurnalPembelianResponse toJurnalPembelianRepository(JurnalPembelian jp) {
         return JurnalPembelianResponse.builder()
                 .jurnalPembelianId(jp.getJurnalPembelianId())

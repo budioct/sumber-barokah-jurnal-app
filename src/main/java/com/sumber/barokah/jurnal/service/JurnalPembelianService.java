@@ -11,4 +11,6 @@ public interface JurnalPembelianService {
 
     List<JurnalPembelianResponse> listJurnalPembelian();
 
+    JurnalPembelianResponse get(String id);
+
 }

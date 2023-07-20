@@ -8,10 +8,7 @@ import com.sumber.barokah.jurnal.utilities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -53,6 +50,24 @@ public class JurnalPembelianController {
                 .message(Constants.ITEM_EXIST_MESSAGE)
                 .build();
     }
+
+    @GetMapping(
+            path = "/api/sb/{id}/jurnalpembelians",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<JurnalPembelianResponse> get(@PathVariable(name = "id") String id){
+
+        JurnalPembelianResponse jurnalPembelianResponse = jurnalPembelianService.get(id);
+
+        return WebResponse.<JurnalPembelianResponse>builder()
+                .data(jurnalPembelianResponse)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.ITEM_EXIST_MESSAGE)
+                .build();
+
+    }
+
 
 
 }
