@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,9 +39,6 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
 
     @Autowired
     JurnalPembelianRepository jurnalPembelianRepository;
-
-    //@Autowired
-    //ProductServiceImpl productServiceImpl;
 
     @Transactional
     public JurnalPembelianResponse create(CreateJurnalPembelianRequest request) {
@@ -66,12 +60,12 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
         jp.setTags(request.getTags());
         jp.setSupplier(supplier);
         //log.info("ID Looping: {}", request.getProducts());
-        List<Product> productslist = new ArrayList<>();
+        List<Product> productslist = new LinkedList<>();
         for (CreateProductRequest products : request.getProducts()) {
             //log.info("ID Looping: {}", products.getProductId());
             Product product = productRepository.findFirstByProductId(products.getProductId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found"));
-            //log.info("Product: {}", products);
+            //log.info("Product: {}", product);
             productslist.add(product);
             jp.setLike_product(productslist);
         }
@@ -79,6 +73,18 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
         jurnalPembelianRepository.save(jp); // save DB
 
         return toJurnalPembelianRepository(jp);
+    }
+
+    @Transactional(readOnly = true)
+    public List<JurnalPembelianResponse> listJurnalPembelian() {
+
+        List<JurnalPembelian> list = jurnalPembelianRepository.findAll();
+
+        if (Objects.isNull(list)){
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Jurnal Pembelian content does not exist!");
+        }
+
+        return list.stream().map(this::toJurnalPembelianRepository).collect(Collectors.toList());
     }
 
     private JurnalPembelianResponse toJurnalPembelianRepository(JurnalPembelian jp) {

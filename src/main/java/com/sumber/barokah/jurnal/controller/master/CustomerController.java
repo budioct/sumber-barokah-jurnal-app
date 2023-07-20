@@ -43,7 +43,7 @@ public class CustomerController {
             path = "/api/sb/customers",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<List<CustomerResponse>> getList(HttpServletResponse response) {
+    public WebResponse<List<CustomerResponse>> getList() {
 
         List<CustomerResponse> customerResponses = customerService.listCustomer();
 

@@ -17,7 +17,7 @@ import java.util.Locale;
 public class StringToDateConverter implements Converter<String, LocalDateTime> {
 
     //private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // use Date
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm", Locale.ROOT); // use package java.time
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm", Locale.ROOT); // use package java.time
     LocalDateTime dateTime;
 
     @Override
