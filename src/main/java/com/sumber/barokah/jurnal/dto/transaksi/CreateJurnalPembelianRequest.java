@@ -3,6 +3,7 @@ package com.sumber.barokah.jurnal.dto.transaksi;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sumber.barokah.jurnal.dto.master.CreateProductRequest;
+import com.sumber.barokah.jurnal.dto.transaksi.jurnalpembelian.CreateProductJurnalPembelianRequest;
 import com.sumber.barokah.jurnal.entity.master.Product;
 import com.sumber.barokah.jurnal.entity.master.Supplier;
 import com.sumber.barokah.jurnal.entity.transaksi.Pembayaran;
@@ -27,7 +28,7 @@ public class CreateJurnalPembelianRequest {
     private String supplierId;
 
     //@JsonIgnore
-    private List<CreateProductRequest> products;
+    private List<CreateProductJurnalPembelianRequest> products;
 
     //private List<Pembayaran> likes0;
 

@@ -1,14 +1,10 @@
-show
-    databases;
+show databases;
 
-create
-    database sumber_barokah_jurnal_app;
+create database sumber_barokah_jurnal_app;
 
-use
-    sumber_barokah_jurnal_app;
+use sumber_barokah_jurnal_app;
 
-show
-    tables;
+show tables;
 
 create table customers
 (
@@ -68,8 +64,7 @@ create table products
     foreign key fk_products_categories (category_id) REFERENCES categories (category_id)
 ) engine = InnoDB;
 
-alter table products
-    modify unit varchar(100);
+alter table products modify unit varchar(100);
 
 show tables;
 describe customers;
@@ -77,14 +72,10 @@ describe suppliers;
 desc categories;
 desc products;
 
-select *
-from customers;
-select *
-from suppliers;
-select *
-from categories;
-select *
-from products;
+select * from customers;
+select * from suppliers;
+select * from categories;
+select * from products;
 
 create table jurnal_pembelian
 (
@@ -117,6 +108,24 @@ create table jurnal_pembelian_like_product
     primary key (jurnal_pembelian_id, product_id)
 ) engine InnoDB;
 
+# catatan: constraint tidak bisa di modifikasi, jadi pertam kita harus hapus constraint, lalu tambhkan dengna constrain yang baru
+alter table jurnal_pembelian_like_product
+    drop constraint jurnal_pembelian_like_product_ibfk_2;
+
+alter table jurnal_pembelian_like_product
+    add constraint jurnal_pembelian_like_product_ibfk_2
+        FOREIGN KEY (product_id)
+            REFERENCES products (product_id)
+            on delete no action on update no action;
+
+show create table jurnal_pembelian_like_product;
+
+select * from suppliers;
+select * from jurnal_pembelian jp
+                  left join suppliers s on s.supplier_id = jp.supplier_id
+                    where s.name = 'cv sayuri';
+
+
 create table jurnal_penjualan
 (
     jurnal_penjualan_id varchar(100) not null,
@@ -137,32 +146,12 @@ create table jurnal_penjualan
     foreign key fk_jurnalumum_product (product_id) REFERENCES products (product_id)
 ) engine = InnoDB;
 
-desc jurnal_pembelian;
-select *
-from jurnal_pembelian;
-desc jurnal_penjualan;
-
-select *
-from customers;
-select *
-from jurnal_penjualan jp
+select * from jurnal_penjualan jp
          left join customers c on (c.customer_id = jp.customers_id)
 where c.email = 'danu@rabinza.com';
-select *
-from customers c
+select * from customers c
          left join jurnal_penjualan jp on c.customer_id = jp.customers_id
 where c.email = 'danu@rabinza.com';
-
-select *
-from suppliers;
-select *
-from jurnal_pembelian jp
-         left join suppliers s on s.supplier_id = jp.supplier_id
-where s.name = 'cv sayuri';
-select *
-from suppliers s
-         left join jurnal_pembelian jp on s.supplier_id = jp.supplier_id
-where s.name = 'cv sayuri';
 
 create table pembayaran
 (
@@ -201,41 +190,24 @@ drop table jurnal_pembelian_like_pembayaran;
 drop table jurnal_penjualan;
 drop table jurnal_penjualan_like_pembayaran;
 
-select *
-from jurnal_pembelian;
-select *
-from jurnal_pembelian_like_product;
-select *
-from products;
+select * from jurnal_pembelian;
+select * from jurnal_pembelian_like_product;
+select * from products;
 
-select *
-from customers
-order by create_at
-limit 0, 10;
+select * from customers order by create_at limit 0, 10;
 
-select count(p.product_id) as count
-from products p;
+select count(p.product_id) as count from products p;
 
-# delete many to many
-delete
-from jurnal_pembelian
-where jurnal_pembelian_id in
-(select jp.jurnal_pembelian_id
- from jurnal_pembelian jp
-          inner join jurnal_pembelian_like_product jplp on jp.jurnal_pembelian_id = jplp.jurnal_pembelian_id
-          inner join products p on jplp.product_id = p.product_id where jp.jurnal_pembelian_id = 1);
+# many to many delete from jurnal pada kunci luar tanpa merusak table refernce relasi
+delete  from jurnal_pembelian where jurnal_pembelian_id in (select jurnal_pembelian_id from jurnal_pembelian_like_product where jurnal_pembelian.jurnal_pembelian_id = '9c35e3cf-cb5e-46e2-b8f2-35bbc07ef1f5');
 
-delete jurnal_pembelian, jurnal_pembelian_like_product where jurnal_pembelian_id = 'd8dab542-8fa1-4a72-bd52-8012dee57b17';
+describe jurnal_pembelian;
+describe jurnal_pembelian_like_product;
+describe products;
 
-delete jp, jpl from jurnal_pembelian jp inner join jurnal_pembelian_like_product jpl
-where jp.jurnal_pembelian_id = jpl.jurnal_pembelian_id and jp.jurnal_pembelian_id = 'd8dab542-8fa1-4a72-bd52-8012dee57b17'
-
-
-
-
-
-
-
+select * from jurnal_pembelian;
+select * from jurnal_pembelian_like_product;
+select * from products;
 
 
 

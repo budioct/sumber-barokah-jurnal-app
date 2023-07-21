@@ -69,8 +69,8 @@ public class JurnalPembelian {
     private Supplier supplier;
 
     // relation product
-    @JsonIgnore
-    @ManyToMany
+    //@JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "jurnal_pembelian_like_product",
             joinColumns = @JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id"),

@@ -88,5 +88,23 @@ public class JurnalPembelianController {
                 .build();
     }
 
+    @DeleteMapping(
+            path = "/api/sb/{id}/jurnalpembelians",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<String> delete(@PathVariable(name = "id") String id){
+
+        jurnalPembelianService.delete(id);
+
+        return WebResponse.<String>builder()
+                .data("")
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.DELETE_MESSAGE)
+                .build();
+
+    }
+
+
 
 }

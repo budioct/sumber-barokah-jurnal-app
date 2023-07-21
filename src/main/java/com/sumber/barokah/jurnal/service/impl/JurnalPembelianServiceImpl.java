@@ -6,6 +6,7 @@ import com.sumber.barokah.jurnal.dto.master.UpdateProductRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.CreateJurnalPembelianRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.JurnalPembelianResponse;
 import com.sumber.barokah.jurnal.dto.transaksi.UpdateJurnalPembelianRequest;
+import com.sumber.barokah.jurnal.dto.transaksi.jurnalpembelian.CreateProductJurnalPembelianRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.jurnalpembelian.UpdateProductJurnalPembelianRequest;
 import com.sumber.barokah.jurnal.entity.master.Product;
 import com.sumber.barokah.jurnal.entity.master.Supplier;
@@ -62,13 +63,18 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
         jp.setNoTransaksi(request.getNoTransaksi());
         jp.setTags(request.getTags());
         jp.setSupplier(supplier);
+
         //log.info("ID Looping: {}", request.getProducts());
         List<Product> productslist = new LinkedList<>();
-        for (CreateProductRequest products : request.getProducts()) {
+        for (CreateProductJurnalPembelianRequest products : request.getProducts()) {
+
+            validationService.validate(products);
+
             //log.info("ID Looping: {}", products.getProductId());
             Product pdt = productRepository.findFirstByProductId(products.getProductId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found"));
             //log.info("Product: {}", pdt);
+
             productslist.add(pdt); // List<Product> productslist
             jp.setLike_product(productslist); // List<Product> like_product
         }
@@ -161,6 +167,16 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
         jurnalPembelianRepository.save(jp); // save DB
 
         return toJurnalPembelianRepository(jp);
+    }
+
+    @Transactional
+    public void delete(String id) {
+
+        JurnalPembelian jp = jurnalPembelianRepository.findFirstByJurnalPembelianId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian not found"));
+
+        jurnalPembelianRepository.deleteJurnalPembelian(jp.getJurnalPembelianId()); // delete DB
+
     }
 
     private JurnalPembelianResponse toJurnalPembelianRepository(JurnalPembelian jp) {

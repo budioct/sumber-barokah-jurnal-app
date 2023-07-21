@@ -75,7 +75,7 @@ public class Product {
     private Category category;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "like_product")
+    @ManyToMany(mappedBy = "like_product", cascade = CascadeType.DETACH)
     private List<JurnalPembelian> like_jurnal_pembelian;
 
     //@ManyToOne

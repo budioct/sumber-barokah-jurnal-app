@@ -1,4 +1,4 @@
-package com.sumber.barokah.jurnal.dto.master;
+package com.sumber.barokah.jurnal.dto.transaksi.jurnalpembelian;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
@@ -9,22 +9,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class CreateProductRequest {
-
-    @JsonIgnore
-    //@NotBlank
-    private String productId;
+public class CreateProductJurnalPembelianRequest {
 
     @NotBlank
+    private String productId;
+
+    @JsonIgnore
     private String categoryId;
 
     @Size(max = 100)
     private String productCode;
 
-    @NotBlank
     @Size(max = 100)
     private String name;
 

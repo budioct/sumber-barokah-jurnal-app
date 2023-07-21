@@ -16,4 +16,6 @@ public interface JurnalPembelianService {
 
     JurnalPembelianResponse update(UpdateJurnalPembelianRequest request);
 
+    void delete(String id);
+
 }
