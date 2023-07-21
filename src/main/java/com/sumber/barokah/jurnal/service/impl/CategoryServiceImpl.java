@@ -92,7 +92,7 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryResponse.builder()
                 .categoryId(category.getCategoryId())
                 .name(category.getName())
-                .products(category.getProducts())
+                //.products(category.getProducts())
                 .createAt(category.getCreateAt())
                 .updateModifiedAt(category.getUpdateModifiedAt())
                 .build();

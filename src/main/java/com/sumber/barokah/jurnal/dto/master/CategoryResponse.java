@@ -20,8 +20,8 @@ public class CategoryResponse {
 
     private String name;
 
-    @JsonIgnore
-    private List<Product> products;
+    //@JsonIgnore
+    //private List<Product> products;
 
     private Instant createAt;
 

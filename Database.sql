@@ -111,7 +111,7 @@ drop table jurnal_pembelian;
 create table jurnal_pembelian_like_product
 (
     jurnal_pembelian_id varchar(100) not null,
-    product_id       varchar(100) not null,
+    product_id          varchar(100) not null,
     foreign key fk_jurnalpembelian_like_product (jurnal_pembelian_id) references jurnal_pembelian (jurnal_pembelian_id),
     foreign key fk_jurnalpembelian_pembelian_like_pembayaran (product_id) references products (product_id),
     primary key (jurnal_pembelian_id, product_id)
@@ -138,7 +138,8 @@ create table jurnal_penjualan
 ) engine = InnoDB;
 
 desc jurnal_pembelian;
-select * from jurnal_pembelian;
+select *
+from jurnal_pembelian;
 desc jurnal_penjualan;
 
 select *
@@ -200,11 +201,34 @@ drop table jurnal_pembelian_like_pembayaran;
 drop table jurnal_penjualan;
 drop table jurnal_penjualan_like_pembayaran;
 
-select * from jurnal_pembelian;
-select * from jurnal_pembelian_like_product;
-select * from products;
+select *
+from jurnal_pembelian;
+select *
+from jurnal_pembelian_like_product;
+select *
+from products;
 
+select *
+from customers
+order by create_at
+limit 0, 10;
 
+select count(p.product_id) as count
+from products p;
+
+# delete many to many
+delete
+from jurnal_pembelian
+where jurnal_pembelian_id in
+(select jp.jurnal_pembelian_id
+ from jurnal_pembelian jp
+          inner join jurnal_pembelian_like_product jplp on jp.jurnal_pembelian_id = jplp.jurnal_pembelian_id
+          inner join products p on jplp.product_id = p.product_id where jp.jurnal_pembelian_id = 1);
+
+delete jurnal_pembelian, jurnal_pembelian_like_product where jurnal_pembelian_id = 'd8dab542-8fa1-4a72-bd52-8012dee57b17';
+
+delete jp, jpl from jurnal_pembelian jp inner join jurnal_pembelian_like_product jpl
+where jp.jurnal_pembelian_id = jpl.jurnal_pembelian_id and jp.jurnal_pembelian_id = 'd8dab542-8fa1-4a72-bd52-8012dee57b17'
 
 
 

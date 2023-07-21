@@ -15,4 +15,7 @@ public interface JurnalPembelianRepository extends JpaRepository<JurnalPembelian
     //Optional<JurnalPembelian> findFirstBySupplierAndProductsAndjAndJurnalPembelianId(Supplier supplier, List<Product> product, String jurnalPembelianId);
 
     Optional<JurnalPembelian> findFirstByJurnalPembelianId(String id);
+
+    Optional<JurnalPembelian> findFirstBySupplierAndJurnalPembelianId(Supplier supplier, String id);
+
 }
