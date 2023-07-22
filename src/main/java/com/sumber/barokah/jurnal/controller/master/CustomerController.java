@@ -4,6 +4,7 @@ import com.sumber.barokah.jurnal.dto.PagingResponse;
 import com.sumber.barokah.jurnal.dto.WebResponse;
 import com.sumber.barokah.jurnal.dto.master.CreateCustomerRequest;
 import com.sumber.barokah.jurnal.dto.master.CustomerResponse;
+import com.sumber.barokah.jurnal.dto.master.PageableCustomerRequest;
 import com.sumber.barokah.jurnal.dto.master.UpdateCustomerRequest;
 import com.sumber.barokah.jurnal.service.CustomerService;
 import com.sumber.barokah.jurnal.utilities.Constants;
@@ -113,12 +114,41 @@ public class CustomerController {
 
 
     @GetMapping(
-            path = "/api/sb/customers1",
+            path = "/api/sb/customers/dynamic",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<List<CustomerResponse>> listPageable() {
+    public WebResponse<List<CustomerResponse>> listPageable(@RequestParam(name = "sortField", required = false) String sortField,
+                                                            @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+                                                            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size
+    ) {
+        PageableCustomerRequest request = new PageableCustomerRequest();
+        request.setPage(page);
+        request.setSize(size);
+        request.setSortField(sortField);
 
-        Page<CustomerResponse> customerResponses = customerService.listCustomerPageable();
+        Page<CustomerResponse> customerResponses = customerService.listCustomerPageableDynamic(request);
+
+        return WebResponse.<List<CustomerResponse>>builder()
+                .data(customerResponses.getContent())
+                .paging(PagingResponse.builder()
+                        .currentPage(customerResponses.getNumber())
+                        .totalPage(customerResponses.getTotalPages())
+                        .size(customerResponses.getSize())
+                        .build())
+                .build();
+
+    }
+
+    @GetMapping(
+            path = "/api/sb/customers/static",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<List<CustomerResponse>> listPageable1(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page) {
+
+        PageableCustomerRequest request = new PageableCustomerRequest();
+        request.setPage(page);
+
+        Page<CustomerResponse> customerResponses = customerService.listCustomerPageableStatic(request);
 
         return WebResponse.<List<CustomerResponse>>builder()
                 .data(customerResponses.getContent())

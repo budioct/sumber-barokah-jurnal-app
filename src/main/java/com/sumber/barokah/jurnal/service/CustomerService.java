@@ -2,6 +2,7 @@ package com.sumber.barokah.jurnal.service;
 
 import com.sumber.barokah.jurnal.dto.master.CreateCustomerRequest;
 import com.sumber.barokah.jurnal.dto.master.CustomerResponse;
+import com.sumber.barokah.jurnal.dto.master.PageableCustomerRequest;
 import com.sumber.barokah.jurnal.dto.master.UpdateCustomerRequest;
 import org.springframework.data.domain.Page;
 
@@ -13,7 +14,9 @@ public interface CustomerService {
 
     List<CustomerResponse> listCustomer();
 
-    Page<CustomerResponse> listCustomerPageable();
+    Page<CustomerResponse> listCustomerPageableStatic(PageableCustomerRequest request);
+
+    Page<CustomerResponse> listCustomerPageableDynamic(PageableCustomerRequest request);
 
     CustomerResponse get(String id);
 

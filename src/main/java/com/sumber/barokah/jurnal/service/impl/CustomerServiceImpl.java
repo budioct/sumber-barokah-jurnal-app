@@ -2,27 +2,37 @@ package com.sumber.barokah.jurnal.service.impl;
 
 import com.sumber.barokah.jurnal.dto.master.CreateCustomerRequest;
 import com.sumber.barokah.jurnal.dto.master.CustomerResponse;
+import com.sumber.barokah.jurnal.dto.master.PageableCustomerRequest;
 import com.sumber.barokah.jurnal.dto.master.UpdateCustomerRequest;
 import com.sumber.barokah.jurnal.entity.master.Customer;
 import com.sumber.barokah.jurnal.repository.master.CustomerRepository;
 import com.sumber.barokah.jurnal.service.CustomerService;
 import com.sumber.barokah.jurnal.service.ValidationService;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
@@ -56,8 +66,8 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<Customer> list = customerRepository.findAll();
 
-        if (Objects.isNull(list)){
-           throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Customer content does not exist!");
+        if (Objects.isNull(list)) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Customer content does not exist!");
         }
 
         return list.stream().map(this::toCustomerResponse).collect(Collectors.toList());
@@ -105,23 +115,51 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CustomerResponse> listCustomerPageable() {
+    public Page<CustomerResponse> listCustomerPageableStatic(PageableCustomerRequest request) {
+        // manual 10 size of page optional. with sorted asc field createAt entity
+        PageRequest pageable = PageRequest.of(request.getPage(), 10, Sort.by(Sort.Order.asc("createAt")));
 
-        PageRequest pageable = PageRequest.of(0, 10);
-        Page<Customer> customer = customerRepository.findAll(pageable);
+        Page<Customer> customer = customerRepository.findAllByOrderByCreateAtAsc(pageable);
 
-        if (Objects.isNull(customer)){
+        if (Objects.isNull(customer)) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Customer content does not exist!");
         }
 
         List<CustomerResponse> customerResponses = customer.getContent().stream().map(this::toCustomerResponse).collect(Collectors.toList());
 
         return new PageImpl<>(customerResponses, pageable, customer.getTotalElements());
-
     }
 
 
-    private CustomerResponse toCustomerResponse(Customer customer){
+    @Transactional(readOnly = true)
+    public Page<CustomerResponse> listCustomerPageableDynamic(PageableCustomerRequest request) {
+
+        Specification<Customer> specification = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (Objects.nonNull(request.getSortField())) {
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(root.get("name"), "%" + request.getSortField() + "%")
+                ));
+            }
+
+            return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
+        };
+
+            PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.asc("createAt")));
+            Page<Customer> customer = customerRepository.findAll(specification, pageable);
+
+            if (Objects.isNull(customer)) {
+                throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Customer content does not exist!");
+            }
+
+            List<CustomerResponse> customerResponses = customer.getContent().stream().map(this::toCustomerResponse).collect(Collectors.toList());
+
+            return new PageImpl<>(customerResponses, pageable, customer.getTotalElements());
+
+    }
+
+    private CustomerResponse toCustomerResponse(Customer customer) {
         return CustomerResponse.builder()
                 .customerId(customer.getCustomerId())
                 .name(customer.getName())
