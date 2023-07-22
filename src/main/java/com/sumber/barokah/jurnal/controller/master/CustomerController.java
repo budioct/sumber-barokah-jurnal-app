@@ -1,5 +1,6 @@
 package com.sumber.barokah.jurnal.controller.master;
 
+import com.sumber.barokah.jurnal.dto.PagingResponse;
 import com.sumber.barokah.jurnal.dto.WebResponse;
 import com.sumber.barokah.jurnal.dto.master.CreateCustomerRequest;
 import com.sumber.barokah.jurnal.dto.master.CustomerResponse;
@@ -8,6 +9,7 @@ import com.sumber.barokah.jurnal.service.CustomerService;
 import com.sumber.barokah.jurnal.utilities.Constants;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -105,6 +107,26 @@ public class CustomerController {
                 .status(HttpStatus.OK)
                 .status_code(Constants.OK)
                 .message(Constants.DELETE_MESSAGE)
+                .build();
+
+    }
+
+
+    @GetMapping(
+            path = "/api/sb/customers1",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<List<CustomerResponse>> listPageable() {
+
+        Page<CustomerResponse> customerResponses = customerService.listCustomerPageable();
+
+        return WebResponse.<List<CustomerResponse>>builder()
+                .data(customerResponses.getContent())
+                .paging(PagingResponse.builder()
+                        .currentPage(customerResponses.getNumber())
+                        .totalPage(customerResponses.getTotalPages())
+                        .size(customerResponses.getSize())
+                        .build())
                 .build();
 
     }

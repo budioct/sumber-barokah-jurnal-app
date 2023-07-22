@@ -8,6 +8,10 @@ import com.sumber.barokah.jurnal.repository.master.CustomerRepository;
 import com.sumber.barokah.jurnal.service.CustomerService;
 import com.sumber.barokah.jurnal.service.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -98,6 +103,23 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.delete(cs); // delete DB
 
     }
+
+    @Transactional(readOnly = true)
+    public Page<CustomerResponse> listCustomerPageable() {
+
+        PageRequest pageable = PageRequest.of(0, 10);
+        Page<Customer> customer = customerRepository.findAll(pageable);
+
+        if (Objects.isNull(customer)){
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Customer content does not exist!");
+        }
+
+        List<CustomerResponse> customerResponses = customer.getContent().stream().map(this::toCustomerResponse).collect(Collectors.toList());
+
+        return new PageImpl<>(customerResponses, pageable, customer.getTotalElements());
+
+    }
+
 
     private CustomerResponse toCustomerResponse(Customer customer){
         return CustomerResponse.builder()

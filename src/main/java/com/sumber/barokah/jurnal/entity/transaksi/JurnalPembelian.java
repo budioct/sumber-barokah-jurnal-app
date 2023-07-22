@@ -70,7 +70,7 @@ public class JurnalPembelian {
 
     // relation product
     //@JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "jurnal_pembelian_like_product",
             joinColumns = @JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id"),
