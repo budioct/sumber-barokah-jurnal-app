@@ -4,20 +4,17 @@ import com.sumber.barokah.jurnal.dto.PagingResponse;
 import com.sumber.barokah.jurnal.dto.WebResponse;
 import com.sumber.barokah.jurnal.dto.master.CreateCustomerRequest;
 import com.sumber.barokah.jurnal.dto.master.CustomerResponse;
-import com.sumber.barokah.jurnal.dto.master.PageableCustomerRequest;
+import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.master.UpdateCustomerRequest;
 import com.sumber.barokah.jurnal.service.CustomerService;
 import com.sumber.barokah.jurnal.utilities.Constants;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 public class CustomerController {
@@ -121,7 +118,7 @@ public class CustomerController {
                                                             @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
                                                             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size
     ) {
-        PageableCustomerRequest request = new PageableCustomerRequest();
+        PageableRequest request = new PageableRequest();
         request.setPage(page);
         request.setSize(size);
         request.setSortField(sortField);
@@ -145,7 +142,7 @@ public class CustomerController {
     )
     public WebResponse<List<CustomerResponse>> listPageable1(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page) {
 
-        PageableCustomerRequest request = new PageableCustomerRequest();
+        PageableRequest request = new PageableRequest();
         request.setPage(page);
 
         Page<CustomerResponse> customerResponses = customerService.listCustomerPageableStatic(request);

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PageableCustomerRequest {
+public class PageableRequest {
 
     private Integer page;
 

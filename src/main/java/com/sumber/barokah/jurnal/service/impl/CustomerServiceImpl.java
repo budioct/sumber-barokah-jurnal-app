@@ -2,17 +2,13 @@ package com.sumber.barokah.jurnal.service.impl;
 
 import com.sumber.barokah.jurnal.dto.master.CreateCustomerRequest;
 import com.sumber.barokah.jurnal.dto.master.CustomerResponse;
-import com.sumber.barokah.jurnal.dto.master.PageableCustomerRequest;
+import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.master.UpdateCustomerRequest;
 import com.sumber.barokah.jurnal.entity.master.Customer;
 import com.sumber.barokah.jurnal.repository.master.CustomerRepository;
 import com.sumber.barokah.jurnal.service.CustomerService;
 import com.sumber.barokah.jurnal.service.ValidationService;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -115,7 +110,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CustomerResponse> listCustomerPageableStatic(PageableCustomerRequest request) {
+    public Page<CustomerResponse> listCustomerPageableStatic(PageableRequest request) {
         // manual 10 size of page optional. with sorted asc field createAt entity
         PageRequest pageable = PageRequest.of(request.getPage(), 10, Sort.by(Sort.Order.asc("createAt")));
 
@@ -132,7 +127,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Transactional(readOnly = true)
-    public Page<CustomerResponse> listCustomerPageableDynamic(PageableCustomerRequest request) {
+    public Page<CustomerResponse> listCustomerPageableDynamic(PageableRequest request) {
 
         Specification<Customer> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
