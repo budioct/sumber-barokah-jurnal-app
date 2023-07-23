@@ -135,6 +135,9 @@ public class CategoryController {
                         .totalPage(categoryResponses.getTotalPages())
                         .size(categoryResponses.getSize())
                         .build())
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.ITEM_EXIST_MESSAGE)
                 .build();
 
     }

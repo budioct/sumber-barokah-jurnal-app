@@ -1,6 +1,7 @@
 package com.sumber.barokah.jurnal.service.impl;
 
 import com.sumber.barokah.jurnal.dto.master.CreateProductRequest;
+import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
 import com.sumber.barokah.jurnal.dto.master.UpdateProductRequest;
 import com.sumber.barokah.jurnal.entity.master.Category;
@@ -9,13 +10,20 @@ import com.sumber.barokah.jurnal.repository.master.CategoryRepository;
 import com.sumber.barokah.jurnal.repository.master.ProductRepository;
 import com.sumber.barokah.jurnal.service.ProductService;
 import com.sumber.barokah.jurnal.service.ValidationService;
+import jakarta.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -68,11 +76,41 @@ public class ProductServiceImpl implements ProductService {
 
         List<Product> list = productRepository.findAll();
 
-        if (Objects.isNull(list)){
+        if (Objects.isNull(list)) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Product content does not exist!");
         }
 
         return list.stream().map(this::toProductResponse).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProductResponse> listPagable(PageableRequest request) {
+
+        Specification<Product> specification = (root, query, criteriaBuilder) -> {
+
+            List<Predicate> predicate = new ArrayList<>();
+
+            if (Objects.nonNull(request.getSortField())) {
+
+                predicate.add(criteriaBuilder.or(
+                        criteriaBuilder.like(root.get("name"), "%" + request.getSortField() + "%")
+                ));
+
+            }
+            return query.where(predicate.toArray(new Predicate[]{})).getRestriction();
+        };
+
+        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.asc("createAt")));
+        Page<Product> product = productRepository.findAll(specification, pageable);
+
+        if (Objects.isNull(product)) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Product content does not exist!");
+        }
+
+        List<ProductResponse> productResponses = product.getContent().stream().map(this::toProductResponse).collect(Collectors.toList());
+
+        return new PageImpl<>(productResponses, pageable, product.getTotalElements());
+
     }
 
     @Transactional(readOnly = true)
@@ -137,7 +175,7 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    private ProductResponse toProductResponse(Product product){
+    private ProductResponse toProductResponse(Product product) {
         return ProductResponse.builder()
                 .productId(product.getProductId())
                 .productCode(product.getProductCode())

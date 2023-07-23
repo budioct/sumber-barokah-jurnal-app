@@ -131,6 +131,9 @@ public class SupplierController {
                         .totalPage(supplierResponses.getTotalPages())
                         .size(supplierResponses.getSize())
                         .build())
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.ITEM_EXIST_MESSAGE)
                 .build();
 
     }
