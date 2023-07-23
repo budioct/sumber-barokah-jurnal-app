@@ -28,7 +28,7 @@ public class CreateJurnalPembelianRequest {
     private String supplierId;
 
     //@JsonIgnore
-    private List<CreateProductJurnalPembelianRequest> products;
+    private List<CreateProductJurnalPembelianRequest> createProducts;
 
     //private List<Pembayaran> likes0;
 

@@ -100,7 +100,7 @@ public class ProductServiceImpl implements ProductService {
             return query.where(predicate.toArray(new Predicate[]{})).getRestriction();
         };
 
-        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.asc("createAt")));
+        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.desc("createAt")));
         Page<Product> product = productRepository.findAll(specification, pageable);
 
         if (Objects.isNull(product)) {

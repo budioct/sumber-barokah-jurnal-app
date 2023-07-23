@@ -79,7 +79,7 @@ public class SupplierServiceImpl implements SupplierService {
             return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
         };
 
-        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.asc("createAt")));
+        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.desc("createAt")));
         Page<Supplier> supplier = supplierRepository.findAll(specification, pageable);
 
         if (Objects.isNull(supplier)) {

@@ -4,6 +4,7 @@ import com.sumber.barokah.jurnal.entity.master.Product;
 import com.sumber.barokah.jurnal.entity.master.Supplier;
 import com.sumber.barokah.jurnal.entity.transaksi.JurnalPembelian;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface JurnalPembelianRepository extends JpaRepository<JurnalPembelian, String> {
+public interface JurnalPembelianRepository extends JpaRepository<JurnalPembelian, String>, JpaSpecificationExecutor<JurnalPembelian> {
 
     //Optional<JurnalPembelian> findFirstBySupplierAndProductsAndjAndJurnalPembelianId(Supplier supplier, List<Product> product, String jurnalPembelianId);
 

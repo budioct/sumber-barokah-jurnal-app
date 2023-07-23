@@ -78,7 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
             return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
         };
 
-        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.asc("createAt")));
+        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.desc("createAt")));
         Page<Category> category = categoryRepository.findAll(specification, pageable);
 
         if (Objects.isNull(category)) {

@@ -112,7 +112,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional(readOnly = true)
     public Page<CustomerResponse> listCustomerPageableStatic(PageableRequest request) {
         // manual 10 size of page optional. with sorted asc field createAt entity
-        PageRequest pageable = PageRequest.of(request.getPage(), 10, Sort.by(Sort.Order.asc("createAt")));
+        PageRequest pageable = PageRequest.of(request.getPage(), 10, Sort.by(Sort.Order.desc("createAt")));
 
         Page<Customer> customer = customerRepository.findAllByOrderByCreateAtAsc(pageable);
 
@@ -141,7 +141,7 @@ public class CustomerServiceImpl implements CustomerService {
             return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
         };
 
-            PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.asc("createAt")));
+            PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.desc("createAt")));
             Page<Customer> customer = customerRepository.findAll(specification, pageable);
 
             if (Objects.isNull(customer)) {

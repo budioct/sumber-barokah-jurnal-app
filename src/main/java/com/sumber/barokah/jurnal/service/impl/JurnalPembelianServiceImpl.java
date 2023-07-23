@@ -1,6 +1,7 @@
 package com.sumber.barokah.jurnal.service.impl;
 
 import com.sumber.barokah.jurnal.dto.master.CreateProductRequest;
+import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
 import com.sumber.barokah.jurnal.dto.master.UpdateProductRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.CreateJurnalPembelianRequest;
@@ -17,8 +18,14 @@ import com.sumber.barokah.jurnal.repository.master.SupplierRepository;
 import com.sumber.barokah.jurnal.repository.transaksi.JurnalPembelianRepository;
 import com.sumber.barokah.jurnal.service.JurnalPembelianService;
 import com.sumber.barokah.jurnal.service.ValidationService;
+import jakarta.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,9 +71,9 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
         jp.setTags(request.getTags());
         jp.setSupplier(supplier);
 
-        //log.info("ID Looping: {}", request.getProducts());
+//        log.info("ID Looping: {}", request.getProducts());
         List<Product> productslist = new LinkedList<>();
-        for (CreateProductJurnalPembelianRequest products : request.getProducts()) {
+        for (CreateProductJurnalPembelianRequest products : request.getCreateProducts()) {
 
             validationService.validate(products);
 
@@ -81,7 +88,7 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
 
         jurnalPembelianRepository.save(jp); // save DB
 
-        return toJurnalPembelianRepository(jp);
+        return toJurnalPembelianResponse(jp);
     }
 
     @Transactional(readOnly = true)
@@ -93,7 +100,35 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Jurnal Pembelian content does not exist!");
         }
 
-        return list.stream().map(this::toJurnalPembelianRepository).collect(Collectors.toList());
+        return list.stream().map(this::toJurnalPembelianResponse).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<JurnalPembelianResponse> listPageable(PageableRequest request) {
+
+        Specification<JurnalPembelian> specification = (root, query, criteriaBuilder) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (Objects.nonNull(request.getSortField())) {
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(root.get("noFaktur"), "%" + request.getSortField() + "%"),
+                        criteriaBuilder.like(root.get("noTransaksi"), "%" + request.getSortField() + "%")
+                ));
+            }
+            return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
+        };
+
+        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.desc("createAt")));
+        Page<JurnalPembelian> jurnalPembelian = jurnalPembelianRepository.findAll(specification, pageable);
+
+        if (Objects.isNull(jurnalPembelian)) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Jurnal Pembelian content does not exist!");
+        }
+
+        List<JurnalPembelianResponse> jurnalPembelianResponses = jurnalPembelian.getContent().stream().map(this::toJurnalPembelianResponse).collect(Collectors.toList());
+
+        return new PageImpl<>(jurnalPembelianResponses, pageable, jurnalPembelian.getTotalElements());
     }
 
     @Transactional(readOnly = true)
@@ -102,11 +137,12 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
         JurnalPembelian jp = jurnalPembelianRepository.findFirstByJurnalPembelianId(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian not found"));
 
-        return toJurnalPembelianRepository(jp);
+        return toJurnalPembelianResponse(jp);
     }
 
     @Transactional
     public JurnalPembelianResponse update(UpdateJurnalPembelianRequest request) {
+        // note supplier tidak boleh di ubah
 
         validationService.validate(request);
 
@@ -166,7 +202,7 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
         }
         jurnalPembelianRepository.save(jp); // save DB
 
-        return toJurnalPembelianRepository(jp);
+        return toJurnalPembelianResponse(jp);
     }
 
     @Transactional
@@ -179,7 +215,7 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
 
     }
 
-    private JurnalPembelianResponse toJurnalPembelianRepository(JurnalPembelian jp) {
+    private JurnalPembelianResponse toJurnalPembelianResponse(JurnalPembelian jp) {
         return JurnalPembelianResponse.builder()
                 .jurnalPembelianId(jp.getJurnalPembelianId())
                 .noFaktur(jp.getNoFaktur())
