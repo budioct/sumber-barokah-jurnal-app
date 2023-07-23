@@ -63,7 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CategoryResponse> listPagable(PageableRequest request) {
+    public Page<CategoryResponse> listPageable(PageableRequest request) {
 
         Specification<Category> specification = (root, query, criteriaBuilder) -> {
 

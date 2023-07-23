@@ -14,7 +14,7 @@ public interface CategoryService {
 
     List<CategoryResponse> listCategory();
 
-    Page<CategoryResponse> listPagable(PageableRequest request);
+    Page<CategoryResponse> listPageable(PageableRequest request);
 
     CategoryResponse get(String id);
 

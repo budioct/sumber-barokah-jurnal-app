@@ -132,7 +132,7 @@ public class ProductController {
         request.setSize(size);
         request.setSortField(sortField);
 
-        Page<ProductResponse> productResponses = productService.listPagable(request);
+        Page<ProductResponse> productResponses = productService.listPageable(request);
 
         return WebResponse.<List<ProductResponse>>builder()
                 .data(productResponses.getContent())

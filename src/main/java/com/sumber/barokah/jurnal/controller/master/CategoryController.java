@@ -126,7 +126,7 @@ public class CategoryController {
         request.setSize(size);
         request.setSortField(sortField);
 
-        Page<CategoryResponse> categoryResponses = categoryService.listPagable(request);
+        Page<CategoryResponse> categoryResponses = categoryService.listPageable(request);
 
         return WebResponse.<List<CategoryResponse>>builder()
                 .data(categoryResponses.getContent())

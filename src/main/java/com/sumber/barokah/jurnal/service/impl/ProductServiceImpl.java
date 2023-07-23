@@ -84,7 +84,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductResponse> listPagable(PageableRequest request) {
+    public Page<ProductResponse> listPageable(PageableRequest request) {
 
         Specification<Product> specification = (root, query, criteriaBuilder) -> {
 

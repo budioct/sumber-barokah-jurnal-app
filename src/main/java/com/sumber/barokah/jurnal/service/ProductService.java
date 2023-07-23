@@ -14,7 +14,7 @@ public interface ProductService {
 
     List<ProductResponse> listProduct();
 
-    Page<ProductResponse> listPagable(PageableRequest request);
+    Page<ProductResponse> listPageable(PageableRequest request);
 
     ProductResponse get(String categoryId, String productId);
 
