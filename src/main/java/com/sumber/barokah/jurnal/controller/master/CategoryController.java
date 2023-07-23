@@ -1,12 +1,15 @@
 package com.sumber.barokah.jurnal.controller.master;
 
+import com.sumber.barokah.jurnal.dto.PagingResponse;
 import com.sumber.barokah.jurnal.dto.WebResponse;
 import com.sumber.barokah.jurnal.dto.master.CategoryResponse;
 import com.sumber.barokah.jurnal.dto.master.CreateCategoryRequest;
+import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.master.UpdateCategoryRequest;
 import com.sumber.barokah.jurnal.service.CategoryService;
 import com.sumber.barokah.jurnal.utilities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -103,6 +106,35 @@ public class CategoryController {
                 .status(HttpStatus.OK)
                 .status_code(Constants.OK)
                 .message(Constants.DELETE_MESSAGE)
+                .build();
+
+    }
+
+
+
+    @GetMapping(
+            path = "/api/sb/categories1",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<List<CategoryResponse>> listPagable(@RequestParam(name = "sortField", required = false) String sortField,
+                                                           @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+                                                           @RequestParam(name = "size", required = false, defaultValue = "10") Integer size
+    ) {
+
+        PageableRequest request = new PageableRequest();
+        request.setPage(page);
+        request.setSize(size);
+        request.setSortField(sortField);
+
+        Page<CategoryResponse> categoryResponses = categoryService.listPagable(request);
+
+        return WebResponse.<List<CategoryResponse>>builder()
+                .data(categoryResponses.getContent())
+                .paging(PagingResponse.builder()
+                        .currentPage(categoryResponses.getNumber())
+                        .totalPage(categoryResponses.getTotalPages())
+                        .size(categoryResponses.getSize())
+                        .build())
                 .build();
 
     }

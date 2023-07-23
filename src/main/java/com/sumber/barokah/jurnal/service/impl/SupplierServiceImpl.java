@@ -83,12 +83,12 @@ public class SupplierServiceImpl implements SupplierService {
         Page<Supplier> supplier = supplierRepository.findAll(specification, pageable);
 
         if (Objects.isNull(supplier)) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Customer content does not exist!");
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Supplier content does not exist!");
         }
 
-        List<SupplierResponse> customerResponses = supplier.getContent().stream().map(this::toSupplierResponse).collect(Collectors.toList());
+        List<SupplierResponse> supplierResponses = supplier.getContent().stream().map(this::toSupplierResponse).collect(Collectors.toList());
 
-        return new PageImpl<>(customerResponses, pageable, supplier.getTotalElements());
+        return new PageImpl<>(supplierResponses, pageable, supplier.getTotalElements());
 
     }
 
