@@ -157,14 +157,18 @@ create table pembayaran
 (
     pembayaran_id      varchar(100) not null,
     tanggal_pembayaran timestamp,
-    nominal            bigint,
+    nominal_bayar      bigint,
     status             varchar(100),
+    keterangan         varchar(255),
+    jurnal_pembelian_id varchar(100) not null,
     create_at          timestamp,
     update_modified_at timestamp,
-    primary key (pembayaran_id)
+    primary key (pembayaran_id),
+    foreign key fk_jurnalpembelian_like_pembayaran (jurnal_pembelian_id) references jurnal_pembelian (jurnal_pembelian_id)
 ) engine = InnoDB;
 
 desc pembayaran;
+select * from pembayaran;
 
 create table jurnal_pembelian_like_pembayaran
 (
