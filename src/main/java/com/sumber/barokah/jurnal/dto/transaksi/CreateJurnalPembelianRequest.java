@@ -25,6 +25,7 @@ import java.util.List;
 public class CreateJurnalPembelianRequest {
 
     @NotBlank
+    @Size(max = 100)
     private String supplierId;
 
     //@JsonIgnore
