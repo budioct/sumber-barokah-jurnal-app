@@ -1,17 +1,17 @@
 package com.sumber.barokah.jurnal.controller.transaksi;
 
+import com.sumber.barokah.jurnal.dto.PagingResponse;
 import com.sumber.barokah.jurnal.dto.WebResponse;
+import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.CreatePembayaranRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.PembayaranResponse;
 import com.sumber.barokah.jurnal.service.PembayaranService;
 import com.sumber.barokah.jurnal.utilities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class PembayaranController {
             path = "/api/sb/pembayaran",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<List<PembayaranResponse>> list(){
+    public WebResponse<List<PembayaranResponse>> list() {
 
         List<PembayaranResponse> pembayaranResponses = pembayaranService.list();
 
@@ -55,5 +55,37 @@ public class PembayaranController {
                 .build();
 
     }
+
+    @GetMapping(
+            path = "/api/sb/pembayaran1",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<List<PembayaranResponse>> listPageable(@RequestParam(name = "sortField", required = false) String sortField,
+                                                              @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+                                                              @RequestParam(name = "size", required = false, defaultValue = "10") Integer size
+
+    ) {
+
+        PageableRequest request = new PageableRequest();
+        request.setPage(page);
+        request.setSize(size);
+        request.setSortField(sortField);
+
+        Page<PembayaranResponse> pembayaranResponses = pembayaranService.listPageable(request);
+
+        return WebResponse.<List<PembayaranResponse>>builder()
+                .data(pembayaranResponses.getContent())
+                .paging(PagingResponse.builder()
+                        .currentPage(pembayaranResponses.getNumber())
+                        .totalPage(pembayaranResponses.getTotalPages())
+                        .size(pembayaranResponses.getSize())
+                        .build())
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.ITEM_EXIST_MESSAGE)
+                .build();
+
+    }
+
 
 }

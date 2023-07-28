@@ -1,5 +1,6 @@
 package com.sumber.barokah.jurnal.service.impl;
 
+import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
 import com.sumber.barokah.jurnal.dto.transaksi.CreatePembayaranRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.JurnalPembelianResponse;
@@ -13,13 +14,20 @@ import com.sumber.barokah.jurnal.repository.transaksi.JurnalPembelianRepository;
 import com.sumber.barokah.jurnal.repository.transaksi.PembayaranRepository;
 import com.sumber.barokah.jurnal.service.PembayaranService;
 import com.sumber.barokah.jurnal.service.ValidationService;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -71,7 +79,7 @@ public class PembayaranServiceImpl implements PembayaranService {
 
         List<Pembayaran> list = pembayaranRepository.findAll();
 
-        if (Objects.isNull(list)){
+        if (Objects.isNull(list)) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Pembayaran content does not exist!");
         }
 
@@ -79,7 +87,37 @@ public class PembayaranServiceImpl implements PembayaranService {
 
     }
 
-    private PembayaranResponse toPembayaranResponse(Pembayaran pembayaran){
+    @Transactional(readOnly = true)
+    public Page<PembayaranResponse> listPageable(PageableRequest request) {
+
+        Specification<Pembayaran> specification = (root, query, criteriaBuilder) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (Objects.nonNull(request.getSortField())) {
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(root.get("status"), "%" + request.getSortField() + "%"),
+                        criteriaBuilder.like(root.get("keterangan"), "%" + request.getSortField() + "%")
+                        //criteriaBuilder.like(root.get("nominalPembayaran"), "%" + request.getSortField() + "%")
+                ));
+            }
+            return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
+        };
+
+        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.desc("createAt")));
+        Page<Pembayaran> pembayaran = pembayaranRepository.findAll(specification, pageable);
+
+        if (Objects.isNull(pembayaran)) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Pembayaran content does not exist!");
+        }
+
+        List<PembayaranResponse> pembayaranResponses = pembayaran.getContent().stream().map(this::toPembayaranResponse).collect(Collectors.toList());
+
+        return new PageImpl<>(pembayaranResponses, pageable, pembayaran.getTotalElements());
+
+    }
+
+    private PembayaranResponse toPembayaranResponse(Pembayaran pembayaran) {
 
         return PembayaranResponse.builder()
                 .pembayaranId(pembayaran.getPembayaranId())
