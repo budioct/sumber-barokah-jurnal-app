@@ -8,9 +8,12 @@ import com.sumber.barokah.jurnal.utilities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class PembayaranController {
@@ -32,6 +35,23 @@ public class PembayaranController {
                 .status(HttpStatus.OK)
                 .status_code(Constants.OK)
                 .message(Constants.CREATE_MESSAGE)
+                .build();
+
+    }
+
+    @GetMapping(
+            path = "/api/sb/pembayaran",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<List<PembayaranResponse>> list(){
+
+        List<PembayaranResponse> pembayaranResponses = pembayaranService.list();
+
+        return WebResponse.<List<PembayaranResponse>>builder()
+                .data(pembayaranResponses)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.ITEM_EXIST_MESSAGE)
                 .build();
 
     }

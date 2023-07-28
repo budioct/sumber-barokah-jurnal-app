@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -62,6 +64,19 @@ public class PembayaranServiceImpl implements PembayaranService {
         pembayaranRepository.save(byr); // save DB
 
         return toPembayaranResponse(byr);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PembayaranResponse> list() {
+
+        List<Pembayaran> list = pembayaranRepository.findAll();
+
+        if (Objects.isNull(list)){
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Pembayaran content does not exist!");
+        }
+
+        return list.stream().map(this::toPembayaranResponse).collect(Collectors.toList());
+
     }
 
     private PembayaranResponse toPembayaranResponse(Pembayaran pembayaran){
