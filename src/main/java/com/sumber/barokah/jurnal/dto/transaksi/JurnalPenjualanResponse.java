@@ -1,29 +1,24 @@
 package com.sumber.barokah.jurnal.dto.transaksi;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
-import com.sumber.barokah.jurnal.entity.master.Product;
+import com.sumber.barokah.jurnal.entity.master.Customer;
 import com.sumber.barokah.jurnal.entity.master.Supplier;
-import com.sumber.barokah.jurnal.entity.transaksi.Pembayaran;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class JurnalPembelianResponse {
+public class JurnalPenjualanResponse {
 
-    private String jurnalPembelianId;
+    private String jurnalPenjualanId;
 
     private String noFaktur;
 
@@ -45,7 +40,7 @@ public class JurnalPembelianResponse {
 
     private Instant updateModifiedAt;
 
-    private Supplier supplier; // ke depanya di ganti DTO
+    private Customer customer; // ke depanya di ganti DTO
 
     //@JsonIgnore
     private List<ProductResponse> products;

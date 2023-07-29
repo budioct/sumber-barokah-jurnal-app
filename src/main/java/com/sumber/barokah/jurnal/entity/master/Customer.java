@@ -1,5 +1,6 @@
 package com.sumber.barokah.jurnal.entity.master;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sumber.barokah.jurnal.entity.transaksi.JurnalPenjualan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -50,6 +51,7 @@ public class Customer {
     @Column(name = "update_modified_at")
     private Instant updateModifiedAt;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "customer")
     private List<JurnalPenjualan> jurnalPenjualans;
 

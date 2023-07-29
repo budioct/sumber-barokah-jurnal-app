@@ -65,7 +65,6 @@ public class JurnalPenjualan {
     private Customer customer;
 
     // relation product
-
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "jurnal_penjualan_like_product",

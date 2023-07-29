@@ -149,7 +149,7 @@ create table jurnal_penjualan
 show tables;
 
 select * from jurnal_penjualan;
-select * from jurnal_penjualan_like_product
+select * from jurnal_penjualan_like_product;
 
 create table jurnal_penjualan_like_product
 (
