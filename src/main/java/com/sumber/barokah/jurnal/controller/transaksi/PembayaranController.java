@@ -5,6 +5,7 @@ import com.sumber.barokah.jurnal.dto.WebResponse;
 import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.CreatePembayaranRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.PembayaranResponse;
+import com.sumber.barokah.jurnal.dto.transaksi.UpdatePembayaranRequest;
 import com.sumber.barokah.jurnal.service.PembayaranService;
 import com.sumber.barokah.jurnal.utilities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +101,26 @@ public class PembayaranController {
                 .status(HttpStatus.OK)
                 .status_code(Constants.OK)
                 .message(Constants.ITEM_EXIST_MESSAGE)
+                .build();
+
+    }
+
+    @PutMapping(
+            path = "/api/sb/{id}/pembayaran",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public  WebResponse<PembayaranResponse> update(@PathVariable(name = "id") String id,
+                                                   @RequestBody UpdatePembayaranRequest request){
+
+        request.setPembayaranId(id);
+        PembayaranResponse pembayaranResponse = pembayaranService.update(request);
+
+        return WebResponse.<PembayaranResponse>builder()
+                .data(pembayaranResponse)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.UPDATE_MESSAGE)
                 .build();
 
     }

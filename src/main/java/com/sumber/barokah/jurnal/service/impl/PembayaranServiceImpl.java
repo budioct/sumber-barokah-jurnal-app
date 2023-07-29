@@ -5,6 +5,7 @@ import com.sumber.barokah.jurnal.dto.master.ProductResponse;
 import com.sumber.barokah.jurnal.dto.transaksi.CreatePembayaranRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.JurnalPembelianResponse;
 import com.sumber.barokah.jurnal.dto.transaksi.PembayaranResponse;
+import com.sumber.barokah.jurnal.dto.transaksi.UpdatePembayaranRequest;
 import com.sumber.barokah.jurnal.entity.master.Product;
 import com.sumber.barokah.jurnal.entity.transaksi.JurnalPembelian;
 import com.sumber.barokah.jurnal.entity.transaksi.Pembayaran;
@@ -124,6 +125,28 @@ public class PembayaranServiceImpl implements PembayaranService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pembayaran not found"));
 
         return toPembayaranResponse(pembayaran);
+    }
+
+    @Transactional
+    public PembayaranResponse update(UpdatePembayaranRequest request) {
+
+        validationService.validate(request);
+
+        JurnalPembelian jurnalPembelian = jurnalPembelianRepository.findFirstByJurnalPembelianId(request.getJurnalPembelianId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian not found"));
+
+        Pembayaran byr = pembayaranRepository.findFirstByJurnalPembeliansLikeByAndPembayaranId(jurnalPembelian, request.getPembayaranId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pembayaran not found"));
+
+        byr.setTanggalPembayaran(request.getTanggalPembayaran());
+        byr.setNominalPembayaran(request.getNominalPembayaran());
+        byr.setStatus(request.getStatus());
+        byr.setKeterangan(request.getKeterangan());
+        byr.setJurnalPembeliansLikeBy(jurnalPembelian);
+
+        pembayaranRepository.save(byr);
+
+        return toPembayaranResponse(byr);
     }
 
     private PembayaranResponse toPembayaranResponse(Pembayaran pembayaran) {

@@ -1,5 +1,6 @@
 package com.sumber.barokah.jurnal.dto.master;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UpdateCategoryRequest {
 
+    @JsonIgnore
     private String categoryId;
 
     @NotBlank
