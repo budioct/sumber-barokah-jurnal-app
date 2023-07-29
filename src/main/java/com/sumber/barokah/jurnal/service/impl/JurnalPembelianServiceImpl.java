@@ -83,7 +83,7 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
             //log.info("Product: {}", pdt);
 
             productslist.add(pdt); // List<Product> productslist
-            jp.setLike_product(productslist); // List<Product> like_product
+            jp.setLike_product0(productslist); // List<Product> like_product
         }
 
         jurnalPembelianRepository.save(jp); // save DB
@@ -197,7 +197,7 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
                 pdt.setSellingPrice(products.getSellingPrice());
 
                 productslist.add(pdt); // List<Product> productslist
-                jp.setLike_product(productslist); // List<Product> like_product
+                jp.setLike_product0(productslist); // List<Product> like_product
             }
         }
         jurnalPembelianRepository.save(jp); // save DB
@@ -227,7 +227,7 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
                 .noTransaksi(jp.getNoTransaksi())
                 .tags(jp.getTags())
                 .supplier(jp.getSupplier())
-                .products(jp.getLike_product().stream().map(this::toProductResponse).collect(Collectors.toList()))
+                .products(jp.getLike_product0().stream().map(this::toProductResponse).collect(Collectors.toList()))
                 .createAt(jp.getCreateAt())
                 .updateModifiedAt(jp.getUpdateModifiedAt())
                 .build();

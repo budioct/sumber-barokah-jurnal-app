@@ -185,7 +185,8 @@ public class PembayaranServiceImpl implements PembayaranService {
                 .noTransaksi(jp.getNoTransaksi())
                 .tags(jp.getTags())
                 .supplier(jp.getSupplier())
-                .products(jp.getLike_product().stream().map(this::toProductResponse).collect(Collectors.toList()))
+//                .products(jp.getLike_product().stream().map(this::toProductResponse).collect(Collectors.toList()))
+                .products(jp.getLike_product0().stream().map(this::toProductResponse).collect(Collectors.toList()))
                 .createAt(jp.getCreateAt())
                 .updateModifiedAt(jp.getUpdateModifiedAt())
                 .build();

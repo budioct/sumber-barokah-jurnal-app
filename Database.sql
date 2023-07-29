@@ -109,8 +109,8 @@ create table jurnal_pembelian_like_product
 ) engine InnoDB;
 
 # catatan: constraint tidak bisa di modifikasi, jadi pertam kita harus hapus constraint, lalu tambhkan dengna constrain yang baru
-alter table jurnal_pembelian_like_product
-    drop constraint jurnal_pembelian_like_product_ibfk_2;
+# alter table jurnal_pembelian_like_product
+#     drop constraint jurnal_pembelian_like_product_ibfk_2;
 
 alter table jurnal_pembelian_like_product
     add constraint jurnal_pembelian_like_product_ibfk_2
@@ -138,20 +138,39 @@ create table jurnal_penjualan
     no_transaksi        varchar(100),
     tags                varchar(100),
     customers_id        varchar(100) not null,
-    product_id          varchar(100) not null,
+#     product_id          varchar(100) not null,
     create_at           timestamp,
     update_modified_at  timestamp,
     primary key (jurnal_penjualan_id),
-    foreign key fk_jurnalumum_customers (customers_id) REFERENCES customers (customer_id),
-    foreign key fk_jurnalumum_product (product_id) REFERENCES products (product_id)
+    foreign key fk_jurnalumum_customers (customers_id) REFERENCES customers (customer_id)
+#     foreign key fk_jurnalumum_product (product_id) REFERENCES products (product_id)
 ) engine = InnoDB;
 
-select * from jurnal_penjualan jp
-         left join customers c on (c.customer_id = jp.customers_id)
-where c.email = 'danu@rabinza.com';
-select * from customers c
-         left join jurnal_penjualan jp on c.customer_id = jp.customers_id
-where c.email = 'danu@rabinza.com';
+show tables;
+
+select * from jurnal_penjualan;
+select * from jurnal_penjualan_like_product
+
+create table jurnal_penjualan_like_product
+(
+    jurnal_penjualan_id varchar(100) not null,
+    product_id          varchar(100) not null,
+    foreign key fk_jurnalpenjualan_like_product (jurnal_penjualan_id) references jurnal_penjualan (jurnal_penjualan_id),
+    foreign key fk_jurnalpenjualan_penjualan_like_pembayaran (product_id) references products (product_id),
+    primary key (jurnal_penjualan_id, product_id)
+) engine InnoDB;
+
+# alter table jurnal_penjualan_like_product
+#     drop constraint jurnal_penjualan_like_product_ibfk_1;
+
+alter table jurnal_penjualan_like_product
+    add constraint jurnal_penjualan_like_product_ibfk_2
+        FOREIGN KEY (product_id)
+            REFERENCES products (product_id)
+            on delete no action on update no action;
+
+show create table jurnal_penjualan_like_product;
+
 
 create table pembayaran
 (

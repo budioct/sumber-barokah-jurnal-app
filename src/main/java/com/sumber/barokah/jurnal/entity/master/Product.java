@@ -75,11 +75,12 @@ public class Product {
     private Category category;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "like_product", cascade = CascadeType.DETACH)
+    @ManyToMany(mappedBy = "like_product0", cascade = CascadeType.DETACH)
     private List<JurnalPembelian> like_jurnal_pembelian;
 
-    //@ManyToOne
-    //private JurnalPenjualan jurnalPenjualan;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "like_product1", cascade = CascadeType.DETACH)
+    private List<JurnalPenjualan>  like_jurnal_penjualan;
 
 
 }

@@ -77,7 +77,7 @@ public class JurnalPembelian {
             joinColumns = @JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     )
-    private List<Product> like_product;
+    private List<Product> like_product0;
 
     // relation pembayaran
     //@JsonIgnore
