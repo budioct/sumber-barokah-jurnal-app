@@ -20,4 +20,6 @@ public interface PembayaranService {
 
     PembayaranResponse update(UpdatePembayaranRequest request);
 
+    void delete(String id);
+
 }

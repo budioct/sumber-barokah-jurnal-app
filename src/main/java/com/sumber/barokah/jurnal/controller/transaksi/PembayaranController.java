@@ -125,5 +125,22 @@ public class PembayaranController {
 
     }
 
+    @DeleteMapping(
+            path = "/api/sb/{id}/pembayaran",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<String> delete(@PathVariable(name = "id") String id){
+
+        pembayaranService.delete(id);
+
+        return WebResponse.<String>builder()
+                .data("")
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.DELETE_MESSAGE)
+                .build();
+
+    }
+
 
 }

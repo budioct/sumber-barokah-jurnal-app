@@ -149,6 +149,16 @@ public class PembayaranServiceImpl implements PembayaranService {
         return toPembayaranResponse(byr);
     }
 
+    @Transactional
+    public void delete(String id) {
+
+        Pembayaran pembayaran = pembayaranRepository.findFirstByPembayaranId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pembayaran not found"));
+
+        pembayaranRepository.delete(pembayaran);
+
+    }
+
     private PembayaranResponse toPembayaranResponse(Pembayaran pembayaran) {
 
         return PembayaranResponse.builder()
