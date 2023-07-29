@@ -87,5 +87,22 @@ public class PembayaranController {
 
     }
 
+    @GetMapping(
+            path = "/api/sb/{id}/pembayaran",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<PembayaranResponse> get(@PathVariable(name = "id") String id) {
+
+        PembayaranResponse pembayaranResponse = pembayaranService.get(id);
+
+        return WebResponse.<PembayaranResponse>builder()
+                .data(pembayaranResponse)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.ITEM_EXIST_MESSAGE)
+                .build();
+
+    }
+
 
 }

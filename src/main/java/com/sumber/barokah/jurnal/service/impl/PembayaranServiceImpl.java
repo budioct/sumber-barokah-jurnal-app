@@ -117,6 +117,15 @@ public class PembayaranServiceImpl implements PembayaranService {
 
     }
 
+    @Transactional(readOnly = true)
+    public PembayaranResponse get(String id) {
+
+        Pembayaran pembayaran = pembayaranRepository.findFirstByPembayaranId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pembayaran not found"));
+
+        return toPembayaranResponse(pembayaran);
+    }
+
     private PembayaranResponse toPembayaranResponse(Pembayaran pembayaran) {
 
         return PembayaranResponse.builder()

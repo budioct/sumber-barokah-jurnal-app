@@ -15,4 +15,6 @@ public interface PembayaranService {
 
     Page<PembayaranResponse> listPageable(PageableRequest request);
 
+    PembayaranResponse get(String id);
+
 }
