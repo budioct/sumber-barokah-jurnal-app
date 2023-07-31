@@ -22,7 +22,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,6 +80,18 @@ public class JurnalPenjualanServiceImpl implements JurnalPenjualanService {
 
         return toJurnalPenjualanResponse(jp);
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<JurnalPenjualanResponse> listJurnalPenjualan() {
+
+        List<JurnalPenjualan> list = jurnalPenjualanRepository.findAll();
+
+        if (Objects.isNull(list)) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Jurnal Penjualan content does not exist!");
+        }
+
+        return list.stream().map(this::toJurnalPenjualanResponse).collect(Collectors.toList());
     }
 
     private JurnalPenjualanResponse toJurnalPenjualanResponse(JurnalPenjualan jp){

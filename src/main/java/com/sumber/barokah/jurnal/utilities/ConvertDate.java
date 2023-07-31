@@ -12,7 +12,7 @@ public class ConvertDate {
 
     public static LocalDateTime convertToLocalDateTime(Instant instant) {
 
-//        return LocalDateTime.ofInstant(instant, ZoneOffset.of("+07:00")); // indonesia zone offset +07:00
+//        return LocalDateTime.ofInstant(instant, ZoneOffset.of("+07:00")); // indonesian zone offset +07:00
         return LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault());
 
     }
