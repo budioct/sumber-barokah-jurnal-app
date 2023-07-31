@@ -8,6 +8,7 @@ import com.sumber.barokah.jurnal.entity.master.Category;
 import com.sumber.barokah.jurnal.repository.master.CategoryRepository;
 import com.sumber.barokah.jurnal.service.CategoryService;
 import com.sumber.barokah.jurnal.service.ValidationService;
+import com.sumber.barokah.jurnal.utilities.ConvertDate;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -129,8 +130,8 @@ public class CategoryServiceImpl implements CategoryService {
                 .categoryId(category.getCategoryId())
                 .name(category.getName())
                 //.products(category.getProducts())
-                .createAt(category.getCreateAt())
-                .updateModifiedAt(category.getUpdateModifiedAt())
+                .createAt(ConvertDate.convertToLocalDateTime(category.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(category.getUpdateModifiedAt()))
                 .build();
     }
 

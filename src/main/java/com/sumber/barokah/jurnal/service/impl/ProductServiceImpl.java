@@ -10,6 +10,7 @@ import com.sumber.barokah.jurnal.repository.master.CategoryRepository;
 import com.sumber.barokah.jurnal.repository.master.ProductRepository;
 import com.sumber.barokah.jurnal.service.ProductService;
 import com.sumber.barokah.jurnal.service.ValidationService;
+import com.sumber.barokah.jurnal.utilities.ConvertDate;
 import jakarta.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,8 +191,8 @@ public class ProductServiceImpl implements ProductService {
                 .itemType(product.getItemType())
                 .description(product.getDescription())
                 .categoryId(product.getCategory().getCategoryId())
-                .createAt(product.getCreateAt())
-                .updateModifiedAt(product.getUpdateModifiedAt())
+                .createAt(ConvertDate.convertToLocalDateTime(product.getUpdateModifiedAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(product.getUpdateModifiedAt()))
                 .build();
     }
 

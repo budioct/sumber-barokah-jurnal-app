@@ -15,6 +15,7 @@ import com.sumber.barokah.jurnal.repository.transaksi.JurnalPembelianRepository;
 import com.sumber.barokah.jurnal.repository.transaksi.PembayaranRepository;
 import com.sumber.barokah.jurnal.service.PembayaranService;
 import com.sumber.barokah.jurnal.service.ValidationService;
+import com.sumber.barokah.jurnal.utilities.ConvertDate;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,8 +169,8 @@ public class PembayaranServiceImpl implements PembayaranService {
                 .status(pembayaran.getStatus())
                 .keterangan(pembayaran.getKeterangan())
                 .jurnalPembeliansLikeBy(toJurnalPembelianResponse(pembayaran.getJurnalPembeliansLikeBy()))
-                .createAt(pembayaran.getCreateAt())
-                .updateModifiedAt(pembayaran.getUpdateModifiedAt())
+                .createAt(ConvertDate.convertToLocalDateTime(pembayaran.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(pembayaran.getUpdateModifiedAt()))
                 .build();
     }
 
@@ -187,8 +188,8 @@ public class PembayaranServiceImpl implements PembayaranService {
                 .supplier(jp.getSupplier())
 //                .products(jp.getLike_product().stream().map(this::toProductResponse).collect(Collectors.toList()))
                 .products(jp.getLike_product0().stream().map(this::toProductResponse).collect(Collectors.toList()))
-                .createAt(jp.getCreateAt())
-                .updateModifiedAt(jp.getUpdateModifiedAt())
+                .createAt(ConvertDate.convertToLocalDateTime(jp.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(jp.getUpdateModifiedAt()))
                 .build();
     }
 
@@ -207,8 +208,8 @@ public class PembayaranServiceImpl implements PembayaranService {
                 .itemType(product.getItemType())
                 .description(product.getDescription())
                 .categoryId(product.getCategory().getCategoryId())
-                .createAt(product.getCreateAt())
-                .updateModifiedAt(product.getUpdateModifiedAt())
+                .createAt(ConvertDate.convertToLocalDateTime(product.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(product.getUpdateModifiedAt()))
                 .build();
     }
 

@@ -232,6 +232,10 @@ select * from jurnal_pembelian;
 select * from jurnal_pembelian_like_product;
 select * from products;
 
+describe jurnal_penjualan;
+describe jurnal_penjualan_like_product;
+select * from products;
+
 
 
 

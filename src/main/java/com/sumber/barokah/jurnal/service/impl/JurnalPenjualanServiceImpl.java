@@ -13,6 +13,7 @@ import com.sumber.barokah.jurnal.repository.master.ProductRepository;
 import com.sumber.barokah.jurnal.repository.transaksi.JurnalPenjualanRepository;
 import com.sumber.barokah.jurnal.service.JurnalPenjualanService;
 import com.sumber.barokah.jurnal.service.ValidationService;
+import com.sumber.barokah.jurnal.utilities.ConvertDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -92,8 +93,8 @@ public class JurnalPenjualanServiceImpl implements JurnalPenjualanService {
                 .tags(jp.getTags())
                 .customer(jp.getCustomer())
                 .products(jp.getLike_product1().stream().map(this::toProductResponse).collect(Collectors.toList()))
-                .createAt(jp.getCreateAt())
-                .updateModifiedAt(jp.getUpdateModifiedAt())
+                .createAt(ConvertDate.convertToLocalDateTime(jp.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(jp.getUpdateModifiedAt()))
                 .build();
 
     }
@@ -113,8 +114,8 @@ public class JurnalPenjualanServiceImpl implements JurnalPenjualanService {
                 .itemType(product.getItemType())
                 .description(product.getDescription())
                 .categoryId(product.getCategory().getCategoryId())
-                .createAt(product.getCreateAt())
-                .updateModifiedAt(product.getUpdateModifiedAt())
+                .createAt(ConvertDate.convertToLocalDateTime(product.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(product.getUpdateModifiedAt()))
                 .build();
 
     }

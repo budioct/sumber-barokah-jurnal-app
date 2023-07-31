@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -30,8 +31,8 @@ public class CustomerResponse {
 
     private String address;
 
-    private Instant createAt;
+    private LocalDateTime createAt;
 
-    private Instant updateModifiedAt;
+    private LocalDateTime updateModifiedAt;
 
 }

@@ -8,6 +8,7 @@ import com.sumber.barokah.jurnal.entity.master.Customer;
 import com.sumber.barokah.jurnal.repository.master.CustomerRepository;
 import com.sumber.barokah.jurnal.service.CustomerService;
 import com.sumber.barokah.jurnal.service.ValidationService;
+import com.sumber.barokah.jurnal.utilities.ConvertDate;
 import jakarta.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,8 +164,8 @@ public class CustomerServiceImpl implements CustomerService {
                 .noHPhone(customer.getNoHPhone())
                 .email(customer.getEmail())
                 .address(customer.getAddress())
-                .createAt(customer.getCreateAt())
-                .updateModifiedAt(customer.getUpdateModifiedAt())
+                .createAt(ConvertDate.convertToLocalDateTime(customer.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(customer.getUpdateModifiedAt()))
                 .build(); // response
     }
 

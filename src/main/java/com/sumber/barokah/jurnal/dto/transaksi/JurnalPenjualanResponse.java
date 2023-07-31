@@ -36,9 +36,9 @@ public class JurnalPenjualanResponse {
 
     private String tags;
 
-    private Instant createAt;
+    private LocalDateTime createAt;
 
-    private Instant updateModifiedAt;
+    private LocalDateTime updateModifiedAt;
 
     private Customer customer; // ke depanya di ganti DTO
 

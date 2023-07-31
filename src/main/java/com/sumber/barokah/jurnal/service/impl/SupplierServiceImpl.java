@@ -5,6 +5,7 @@ import com.sumber.barokah.jurnal.entity.master.Supplier;
 import com.sumber.barokah.jurnal.repository.master.SupplierRepository;
 import com.sumber.barokah.jurnal.service.SupplierService;
 import com.sumber.barokah.jurnal.service.ValidationService;
+import com.sumber.barokah.jurnal.utilities.ConvertDate;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -141,8 +142,8 @@ public class SupplierServiceImpl implements SupplierService {
                 .email(supplier.getEmail())
                 .noHPhone(supplier.getNoHPhone())
                 .address(supplier.getAddress())
-                .createAt(supplier.getCreateAt())
-                .updateModifiedAt(supplier.getUpdateModifiedAt())
+                .createAt(ConvertDate.convertToLocalDateTime(supplier.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(supplier.getUpdateModifiedAt()))
                 .build();
     }
 

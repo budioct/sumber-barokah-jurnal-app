@@ -24,9 +24,9 @@ public class PembayaranResponse {
 
     private String keterangan;
 
-    private Instant createAt;
+    private LocalDateTime createAt;
 
-    private Instant updateModifiedAt;
+    private LocalDateTime updateModifiedAt;
 
     // return bukan entity tetapi dari dto nya supaya tidak error runtime exception: Could not write JSON: Infinite recursion (StackOverflowError)] with root cause
     private JurnalPembelianResponse jurnalPembeliansLikeBy;

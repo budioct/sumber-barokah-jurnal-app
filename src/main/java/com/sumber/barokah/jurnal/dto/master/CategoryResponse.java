@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -23,8 +24,8 @@ public class CategoryResponse {
     //@JsonIgnore
     //private List<Product> products;
 
-    private Instant createAt;
+    private LocalDateTime createAt;
 
-    private Instant updateModifiedAt;
+    private LocalDateTime updateModifiedAt;
 
 }

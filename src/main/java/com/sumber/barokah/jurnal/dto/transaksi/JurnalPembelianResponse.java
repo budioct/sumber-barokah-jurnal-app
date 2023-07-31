@@ -41,9 +41,9 @@ public class JurnalPembelianResponse {
 
     private String tags;
 
-    private Instant createAt;
+    private LocalDateTime createAt;
 
-    private Instant updateModifiedAt;
+    private LocalDateTime updateModifiedAt;
 
     private Supplier supplier; // ke depanya di ganti DTO
 

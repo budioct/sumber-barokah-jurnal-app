@@ -18,6 +18,7 @@ import com.sumber.barokah.jurnal.repository.master.SupplierRepository;
 import com.sumber.barokah.jurnal.repository.transaksi.JurnalPembelianRepository;
 import com.sumber.barokah.jurnal.service.JurnalPembelianService;
 import com.sumber.barokah.jurnal.service.ValidationService;
+import com.sumber.barokah.jurnal.utilities.ConvertDate;
 import jakarta.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -228,8 +229,8 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
                 .tags(jp.getTags())
                 .supplier(jp.getSupplier())
                 .products(jp.getLike_product0().stream().map(this::toProductResponse).collect(Collectors.toList()))
-                .createAt(jp.getCreateAt())
-                .updateModifiedAt(jp.getUpdateModifiedAt())
+                .createAt(ConvertDate.convertToLocalDateTime(jp.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(jp.getUpdateModifiedAt()))
                 .build();
     }
 
@@ -248,8 +249,8 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
                 .itemType(product.getItemType())
                 .description(product.getDescription())
                 .categoryId(product.getCategory().getCategoryId())
-                .createAt(product.getCreateAt())
-                .updateModifiedAt(product.getUpdateModifiedAt())
+                .createAt(ConvertDate.convertToLocalDateTime(product.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(product.getUpdateModifiedAt()))
                 .build();
     }
 }
