@@ -6,13 +6,18 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.Objects;
 
 @Component
 public class ConvertDate {
 
     public static LocalDateTime convertToLocalDateTime(Instant instant) {
 
-//        return LocalDateTime.ofInstant(instant, ZoneOffset.of("+07:00")); // indonesian zone offset +07:00
+        if (Objects.isNull(instant)) {
+            return null;
+        }
+
+        // return LocalDateTime.ofInstant(instant, ZoneOffset.of("+07:00")); // indonesian zone offset +07:00
         return LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault());
 
     }
