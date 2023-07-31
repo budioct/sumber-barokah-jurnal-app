@@ -1,5 +1,6 @@
 package com.sumber.barokah.jurnal.service.impl;
 
+import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
 import com.sumber.barokah.jurnal.dto.transaksi.CreateJurnalPenjualanRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.JurnalPenjualanResponse;
@@ -14,16 +15,19 @@ import com.sumber.barokah.jurnal.repository.transaksi.JurnalPenjualanRepository;
 import com.sumber.barokah.jurnal.service.JurnalPenjualanService;
 import com.sumber.barokah.jurnal.service.ValidationService;
 import com.sumber.barokah.jurnal.utilities.ConvertDate;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,7 +68,7 @@ public class JurnalPenjualanServiceImpl implements JurnalPenjualanService {
         jp.setCustomer(customer);
 
         List<Product> productList = new LinkedList<>();
-        for (CreateProductJurnalPembelianRequest products : request.getCreateProducts()){
+        for (CreateProductJurnalPembelianRequest products : request.getCreateProducts()) {
 
             validationService.validate(products);
 
@@ -94,7 +98,36 @@ public class JurnalPenjualanServiceImpl implements JurnalPenjualanService {
         return list.stream().map(this::toJurnalPenjualanResponse).collect(Collectors.toList());
     }
 
-    private JurnalPenjualanResponse toJurnalPenjualanResponse(JurnalPenjualan jp){
+    @Transactional(readOnly = true)
+    public Page<JurnalPenjualanResponse> listPageable(PageableRequest request) {
+
+        Specification<JurnalPenjualan> specification = (root, query, criteriaBuilder) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (Objects.nonNull(request.getSortField())) {
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(root.get("noFaktur"), "%" + request.getSortField() + "%"),
+                        criteriaBuilder.like(root.get("noTransaksi"), "%" + request.getSortField() + "%")
+                ));
+            }
+            return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
+        };
+
+        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Order.desc("createAt")));
+        Page<JurnalPenjualan> jurnalPenjualan = jurnalPenjualanRepository.findAll(specification, pageable);
+
+        if (Objects.isNull(jurnalPenjualan)) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Jurnal Penjualan content does not exist!");
+        }
+
+        List<JurnalPenjualanResponse> jurnalPenjualanResponses = jurnalPenjualan.getContent().stream().map(this::toJurnalPenjualanResponse).collect(Collectors.toList());
+
+        return new PageImpl<>(jurnalPenjualanResponses, pageable, jurnalPenjualan.getTotalElements());
+
+    }
+
+    private JurnalPenjualanResponse toJurnalPenjualanResponse(JurnalPenjualan jp) {
         return JurnalPenjualanResponse.builder()
                 .jurnalPenjualanId(jp.getJurnalPenjualanId())
                 .noFaktur(jp.getNoFaktur())
