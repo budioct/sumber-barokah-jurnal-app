@@ -21,4 +21,6 @@ public interface JurnalPenjualanService {
 
     JurnalPenjualanResponse update(UpdateJurnalPenjualanRequest request);
 
+    void delete(String id);
+
 }

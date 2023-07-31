@@ -82,7 +82,7 @@ public class JurnalPenjualanServiceImpl implements JurnalPenjualanService {
 
         }
 
-        jurnalPenjualanRepository.save(jp);
+        jurnalPenjualanRepository.save(jp); // save DB
 
         return toJurnalPenjualanResponse(jp);
 
@@ -193,9 +193,19 @@ public class JurnalPenjualanServiceImpl implements JurnalPenjualanService {
                 jp.setLike_product1(productList);
             }
         }
-        jurnalPenjualanRepository.save(jp);
+        jurnalPenjualanRepository.save(jp); // save DB
 
         return toJurnalPenjualanResponse(jp);
+
+    }
+
+    @Transactional
+    public void delete(String id) {
+
+        JurnalPenjualan jp = jurnalPenjualanRepository.findFirstByJurnalPenjualanId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Penjualan not found"));
+
+        jurnalPenjualanRepository.deleteJurnalPenjualan(jp.getJurnalPenjualanId()); // delete DB
 
     }
 

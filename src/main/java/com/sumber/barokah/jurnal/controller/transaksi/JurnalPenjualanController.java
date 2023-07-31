@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.print.attribute.standard.Media;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 public class JurnalPenjualanController {
@@ -122,6 +123,23 @@ public class JurnalPenjualanController {
                 .status(HttpStatus.OK)
                 .status_code(Constants.OK)
                 .message(Constants.UPDATE_MESSAGE)
+                .build();
+
+    }
+
+    @DeleteMapping(
+            path = "/api/sb/{id}/jurnalpenjualans",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<String> delete(@PathVariable(name = "id") String id) {
+
+        jurnalPenjualanService.delete(id);
+
+        return WebResponse.<String>builder()
+                .data("")
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.DELETE_MESSAGE)
                 .build();
 
     }

@@ -234,7 +234,13 @@ select * from products;
 
 describe jurnal_penjualan;
 describe jurnal_penjualan_like_product;
+
+select * from jurnal_penjualan;
+select * from jurnal_penjualan_like_product;
 select * from products;
+
+# many to many delete from jurnal pada kunci luar tanpa merusak table refernce relasi
+delete from jurnal_penjualan where jurnal_penjualan_id in (select jurnal_penjualan_id from jurnal_penjualan_like_product where jurnal_penjualan.jurnal_penjualan_id = '7bf298c2-31ff-48dc-8517-063c8af4cc3f');
 
 
 
