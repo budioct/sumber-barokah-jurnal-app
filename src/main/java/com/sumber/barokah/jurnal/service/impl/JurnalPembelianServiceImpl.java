@@ -170,7 +170,8 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
         // delete and update product // many to many
         //log.info("ID Looping: {}", request.getUpdateProducts());
         List<Product> productslist = new LinkedList<>();
-        // delete
+
+        // delete product
 //        if (Objects.nonNull(request.getDeleteProducts())) {
 //            for (UpdateProductJurnalPembelianRequest products : request.getDeleteProducts()) {
 //                log.info("ID Looping: {}", products.getProductId());
@@ -185,7 +186,8 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
 //                jp.setLike_product(productslist);
 //            }
 //        }
-        // update
+
+        // update product
         if (Objects.nonNull(request.getUpdateProducts())) {
             for (UpdateProductJurnalPembelianRequest products : request.getUpdateProducts()) {
                 validationService.validate(products);

@@ -4,7 +4,9 @@ import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
 import com.sumber.barokah.jurnal.dto.transaksi.CreateJurnalPenjualanRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.JurnalPenjualanResponse;
+import com.sumber.barokah.jurnal.dto.transaksi.UpdateJurnalPenjualanRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.jurnalpembelian.CreateProductJurnalPembelianRequest;
+import com.sumber.barokah.jurnal.dto.transaksi.jurnalpembelian.UpdateProductJurnalPembelianRequest;
 import com.sumber.barokah.jurnal.entity.master.Customer;
 import com.sumber.barokah.jurnal.entity.master.Product;
 import com.sumber.barokah.jurnal.entity.transaksi.JurnalPembelian;
@@ -134,6 +136,67 @@ public class JurnalPenjualanServiceImpl implements JurnalPenjualanService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Penjualan not found"));
 
         return toJurnalPenjualanResponse(jp);
+    }
+
+    @Transactional
+    public JurnalPenjualanResponse update(UpdateJurnalPenjualanRequest request) {
+
+        validationService.validate(request);
+
+        Customer customer = customerRepository.findFirstByCustomerId(request.getCustomerId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+
+        JurnalPenjualan jp = jurnalPenjualanRepository.findFirstByCustomerAndJurnalPenjualanId(customer, request.getJurnalPenjualanId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Penjualan not found"));
+
+        jp.setNoFaktur(request.getNoFaktur());
+        jp.setTanggalTransaksi(request.getTanggalTransaksi());
+        jp.setTanggalJatuhTempo(request.getTanggalJatuhTempo());
+        jp.setStatus(request.getStatus());
+        jp.setSisaTagihan(request.getSisaTagihan());
+        jp.setJumlahTotal(request.getJumlahTotal());
+        jp.setNoTransaksi(request.getNoTransaksi());
+        jp.setTags(request.getTags());
+        jp.setCustomer(customer);
+
+        List<Product> productList = new LinkedList<>();
+
+        // delete product
+        //        if (Objects.nonNull(request.getDeleteProducts())) {
+//            for (UpdateProductJurnalPembelianRequest products : request.getDeleteProducts()) {
+//                log.info("ID Looping: {}", products.getProductId());
+//
+//                validationService.validate(products);
+//
+//                Product product = productRepository.findFirstByProductId(products.getProductId())
+//                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found"));
+//                log.info("Product: {}", product);
+//
+//                productslist.add(product);
+//                jp.setLike_product(productslist);
+//            }
+//        }
+
+        // update product
+        if (Objects.nonNull(request.getUpdateProducts())) {
+            for (UpdateProductJurnalPembelianRequest products : request.getUpdateProducts()) {
+                validationService.validate(products);
+
+                Product pdt = productRepository.findFirstByProductId(products.getProductId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found"));
+
+                pdt.setDescription(products.getDescription());
+                pdt.setQuantity(products.getQuantity());
+                pdt.setSellingPrice(products.getSellingPrice());
+
+                productList.add(pdt);
+                jp.setLike_product1(productList);
+            }
+        }
+        jurnalPenjualanRepository.save(jp);
+
+        return toJurnalPenjualanResponse(jp);
+
     }
 
     private JurnalPenjualanResponse toJurnalPenjualanResponse(JurnalPenjualan jp) {

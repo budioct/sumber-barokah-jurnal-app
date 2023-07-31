@@ -5,6 +5,7 @@ import com.sumber.barokah.jurnal.dto.WebResponse;
 import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.CreateJurnalPenjualanRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.JurnalPenjualanResponse;
+import com.sumber.barokah.jurnal.dto.transaksi.UpdateJurnalPenjualanRequest;
 import com.sumber.barokah.jurnal.service.JurnalPenjualanService;
 import com.sumber.barokah.jurnal.utilities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import java.util.List;
 
 @RestController
@@ -91,7 +93,7 @@ public class JurnalPenjualanController {
             path = "/api/sb/{id}/jurnalpenjualans",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<JurnalPenjualanResponse> get(@PathVariable(name = "id") String id){
+    public WebResponse<JurnalPenjualanResponse> get(@PathVariable(name = "id") String id) {
 
         JurnalPenjualanResponse jurnalPenjualanResponse = jurnalPenjualanService.get(id);
 
@@ -100,6 +102,26 @@ public class JurnalPenjualanController {
                 .status(HttpStatus.OK)
                 .status_code(Constants.OK)
                 .message(Constants.ITEM_EXIST_MESSAGE)
+                .build();
+
+    }
+
+    @PutMapping(
+            path = "/api/sb/{id}/jurnalpenjualans",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<JurnalPenjualanResponse> update(@RequestBody UpdateJurnalPenjualanRequest request,
+                                                       @PathVariable(name = "id") String id) {
+
+        request.setJurnalPenjualanId(id);
+        JurnalPenjualanResponse jurnalPenjualanResponse = jurnalPenjualanService.update(request);
+
+        return WebResponse.<JurnalPenjualanResponse>builder()
+                .data(jurnalPenjualanResponse)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.UPDATE_MESSAGE)
                 .build();
 
     }
