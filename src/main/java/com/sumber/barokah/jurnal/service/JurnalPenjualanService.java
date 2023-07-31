@@ -15,4 +15,6 @@ public interface JurnalPenjualanService {
 
     Page<JurnalPenjualanResponse> listPageable(PageableRequest request);
 
+    JurnalPenjualanResponse get(String id);
+
 }

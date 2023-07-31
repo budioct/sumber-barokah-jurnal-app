@@ -127,6 +127,15 @@ public class JurnalPenjualanServiceImpl implements JurnalPenjualanService {
 
     }
 
+    @Transactional(readOnly = true)
+    public JurnalPenjualanResponse get(String id) {
+
+        JurnalPenjualan jp = jurnalPenjualanRepository.findFirstByJurnalPenjualanId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Penjualan not found"));
+
+        return toJurnalPenjualanResponse(jp);
+    }
+
     private JurnalPenjualanResponse toJurnalPenjualanResponse(JurnalPenjualan jp) {
         return JurnalPenjualanResponse.builder()
                 .jurnalPenjualanId(jp.getJurnalPenjualanId())

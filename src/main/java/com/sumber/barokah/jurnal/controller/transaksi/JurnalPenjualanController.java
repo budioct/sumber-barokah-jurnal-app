@@ -87,5 +87,22 @@ public class JurnalPenjualanController {
 
     }
 
+    @GetMapping(
+            path = "/api/sb/{id}/jurnalpenjualans",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<JurnalPenjualanResponse> get(@PathVariable(name = "id") String id){
+
+        JurnalPenjualanResponse jurnalPenjualanResponse = jurnalPenjualanService.get(id);
+
+        return WebResponse.<JurnalPenjualanResponse>builder()
+                .data(jurnalPenjualanResponse)
+                .status(HttpStatus.OK)
+                .status_code(Constants.OK)
+                .message(Constants.ITEM_EXIST_MESSAGE)
+                .build();
+
+    }
+
 
 }
