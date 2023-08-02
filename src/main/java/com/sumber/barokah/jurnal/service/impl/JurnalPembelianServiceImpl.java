@@ -1,21 +1,18 @@
 package com.sumber.barokah.jurnal.service.impl;
 
-import com.sumber.barokah.jurnal.dto.master.CreateProductRequest;
-import com.sumber.barokah.jurnal.dto.master.PageableRequest;
-import com.sumber.barokah.jurnal.dto.master.ProductResponse;
-import com.sumber.barokah.jurnal.dto.master.UpdateProductRequest;
-import com.sumber.barokah.jurnal.dto.transaksi.CreateJurnalPembelianRequest;
-import com.sumber.barokah.jurnal.dto.transaksi.JurnalPembelianResponse;
-import com.sumber.barokah.jurnal.dto.transaksi.UpdateJurnalPembelianRequest;
+import com.sumber.barokah.jurnal.dto.master.*;
+import com.sumber.barokah.jurnal.dto.transaksi.*;
 import com.sumber.barokah.jurnal.dto.transaksi.jurnalpembelian.CreateProductJurnalPembelianRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.jurnalpembelian.UpdateProductJurnalPembelianRequest;
 import com.sumber.barokah.jurnal.entity.master.Product;
 import com.sumber.barokah.jurnal.entity.master.Supplier;
 import com.sumber.barokah.jurnal.entity.transaksi.JurnalPembelian;
 import com.sumber.barokah.jurnal.entity.transaksi.JurnalPenjualan;
+import com.sumber.barokah.jurnal.entity.transaksi.Pembayaran;
 import com.sumber.barokah.jurnal.repository.master.ProductRepository;
 import com.sumber.barokah.jurnal.repository.master.SupplierRepository;
 import com.sumber.barokah.jurnal.repository.transaksi.JurnalPembelianRepository;
+import com.sumber.barokah.jurnal.repository.transaksi.PembayaranRepository;
 import com.sumber.barokah.jurnal.service.JurnalPembelianService;
 import com.sumber.barokah.jurnal.service.ValidationService;
 import com.sumber.barokah.jurnal.utilities.ConvertDate;
@@ -32,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -48,6 +46,9 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    PembayaranRepository pembayaranRepository;
 
     @Autowired
     JurnalPembelianRepository jurnalPembelianRepository;
@@ -87,6 +88,29 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
             jp.setLike_product0(productslist); // List<Product> like_product
         }
 
+        // add pembayaran
+        List<Pembayaran> pembayaranList = new LinkedList<>();
+        CreatePembayaranRequest pembayarans = request.getCreatePembayarans();
+        validationService.validate(pembayarans);
+
+        Pembayaran byr = new Pembayaran();
+        byr.setPembayaranId(UUID.randomUUID().toString());
+        byr.setTanggalPembayaran(pembayarans.getTanggalPembayaran());
+        byr.setTotalPembayaran(pembayarans.getTotalPembayaran());
+        byr.setStatus(pembayarans.getStatus());
+        byr.setKeterangan(pembayarans.getKeterangan());
+        byr.setCreateAt(Instant.now());
+
+        //log.info("byr= {}", byr);
+
+        if (Objects.nonNull(byr)) {
+            pembayaranList.add(byr);
+            jp.setLike_pembayaran0(pembayaranList);
+        } else {
+            return null;
+        }
+
+        pembayaranRepository.save(byr); // save DB
         jurnalPembelianRepository.save(jp); // save DB
 
         return toJurnalPembelianResponse(jp);
@@ -229,10 +253,26 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
                 .jumlahTotal(jp.getJumlahTotal())
                 .noTransaksi(jp.getNoTransaksi())
                 .tags(jp.getTags())
-                .supplier(jp.getSupplier())
+                .supplier(toSupplierResponse(jp.getSupplier()))
                 .products(jp.getLike_product0().stream().map(this::toProductResponse).collect(Collectors.toList()))
+                .pembayarans(jp.getLike_pembayaran0().stream().map(this::toPembayaranResponse).collect(Collectors.toList()))
                 .createAt(ConvertDate.convertToLocalDateTime(jp.getCreateAt()))
                 .updateModifiedAt(ConvertDate.convertToLocalDateTime(jp.getUpdateModifiedAt()))
+                .build();
+    }
+
+    private SupplierResponse toSupplierResponse(Supplier supplier) {
+        return SupplierResponse.builder()
+                .supplierId(supplier.getSupplierId())
+                .name(supplier.getName())
+                .company(supplier.getCompany())
+                .saldo(supplier.getSaldo())
+                .company(supplier.getCompany())
+                .email(supplier.getEmail())
+                .noHPhone(supplier.getNoHPhone())
+                .address(supplier.getAddress())
+                .createAt(ConvertDate.convertToLocalDateTime(supplier.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(supplier.getUpdateModifiedAt()))
                 .build();
     }
 
@@ -255,4 +295,18 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
                 .updateModifiedAt(ConvertDate.convertToLocalDateTime(product.getUpdateModifiedAt()))
                 .build();
     }
+
+    private PembayaranResponse toPembayaranResponse(Pembayaran pembayaran) {
+        return PembayaranResponse.builder()
+                .pembayaranId(pembayaran.getPembayaranId())
+                .tanggalPembayaran(pembayaran.getTanggalPembayaran())
+                .totalPembayaran(pembayaran.getTotalPembayaran())
+                .status(pembayaran.getStatus())
+                .keterangan(pembayaran.getKeterangan())
+                //.jurnalPembeliansLikeBy(toJurnalPembelianResponse(pembayaran.getJurnalPembeliansLikeBy()))
+                .createAt(ConvertDate.convertToLocalDateTime(pembayaran.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(pembayaran.getUpdateModifiedAt()))
+                .build();
+    }
+
 }

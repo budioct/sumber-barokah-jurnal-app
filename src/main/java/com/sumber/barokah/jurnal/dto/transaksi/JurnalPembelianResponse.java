@@ -2,6 +2,7 @@ package com.sumber.barokah.jurnal.dto.transaksi;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
+import com.sumber.barokah.jurnal.dto.master.SupplierResponse;
 import com.sumber.barokah.jurnal.entity.master.Product;
 import com.sumber.barokah.jurnal.entity.master.Supplier;
 import com.sumber.barokah.jurnal.entity.transaksi.Pembayaran;
@@ -45,11 +46,11 @@ public class JurnalPembelianResponse {
 
     private LocalDateTime updateModifiedAt;
 
-    private Supplier supplier; // ke depanya di ganti DTO
+    private SupplierResponse supplier; // ke depanya di ganti DTO
 
     //@JsonIgnore
     private List<ProductResponse> products;
 
-    //private List<Pembayaran> likes0;
+    private List<PembayaranResponse> pembayarans;
 
 }

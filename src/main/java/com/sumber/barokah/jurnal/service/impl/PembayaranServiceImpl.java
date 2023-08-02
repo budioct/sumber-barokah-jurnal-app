@@ -2,11 +2,13 @@ package com.sumber.barokah.jurnal.service.impl;
 
 import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
+import com.sumber.barokah.jurnal.dto.master.SupplierResponse;
 import com.sumber.barokah.jurnal.dto.transaksi.CreatePembayaranRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.JurnalPembelianResponse;
 import com.sumber.barokah.jurnal.dto.transaksi.PembayaranResponse;
 import com.sumber.barokah.jurnal.dto.transaksi.UpdatePembayaranRequest;
 import com.sumber.barokah.jurnal.entity.master.Product;
+import com.sumber.barokah.jurnal.entity.master.Supplier;
 import com.sumber.barokah.jurnal.entity.transaksi.JurnalPembelian;
 import com.sumber.barokah.jurnal.entity.transaksi.Pembayaran;
 import com.sumber.barokah.jurnal.repository.master.ProductRepository;
@@ -31,7 +33,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -182,11 +183,26 @@ public class PembayaranServiceImpl implements PembayaranService {
                 .jumlahTotal(jp.getJumlahTotal())
                 .noTransaksi(jp.getNoTransaksi())
                 .tags(jp.getTags())
-                .supplier(jp.getSupplier())
+                .supplier(toSupplierResponse(jp.getSupplier()))
 //                .products(jp.getLike_product().stream().map(this::toProductResponse).collect(Collectors.toList()))
                 .products(jp.getLike_product0().stream().map(this::toProductResponse).collect(Collectors.toList()))
                 .createAt(ConvertDate.convertToLocalDateTime(jp.getCreateAt()))
                 .updateModifiedAt(ConvertDate.convertToLocalDateTime(jp.getUpdateModifiedAt()))
+                .build();
+    }
+
+    private SupplierResponse toSupplierResponse(Supplier supplier) {
+        return SupplierResponse.builder()
+                .supplierId(supplier.getSupplierId())
+                .name(supplier.getName())
+                .company(supplier.getCompany())
+                .saldo(supplier.getSaldo())
+                .company(supplier.getCompany())
+                .email(supplier.getEmail())
+                .noHPhone(supplier.getNoHPhone())
+                .address(supplier.getAddress())
+                .createAt(ConvertDate.convertToLocalDateTime(supplier.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(supplier.getUpdateModifiedAt()))
                 .build();
     }
 

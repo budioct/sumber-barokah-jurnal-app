@@ -33,8 +33,8 @@ public class CreatePembayaranRequest {
     @Size(max = 255)
     private String keterangan;
 
-    private Instant createAt;
+    //private Instant createAt;
 
-    private Instant updateModifiedAt;
+    //private Instant updateModifiedAt;
 
 }

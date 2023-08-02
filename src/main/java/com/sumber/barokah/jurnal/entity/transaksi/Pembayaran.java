@@ -54,6 +54,7 @@ public class Pembayaran {
     //@JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id")
     //private JurnalPembelian jurnalPembeliansLikeBy;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "like_pembayaran0", cascade = CascadeType.DETACH)
     private List<JurnalPembelian> like_jurnal_pembelian;
 

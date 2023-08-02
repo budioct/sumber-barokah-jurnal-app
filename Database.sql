@@ -250,6 +250,11 @@ select * from jurnal_pembelian;
 select * from jurnal_pembelian_like_product;
 select * from products;
 
+desc pembayaran;
+
+select * from pembayaran;
+select * from jurnal_pembelian_like_pembayaran;
+
 select * from customers order by create_at limit 0, 10;
 
 select count(p.product_id) as count from products p;
