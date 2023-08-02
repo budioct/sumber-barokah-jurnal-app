@@ -176,36 +176,69 @@ create table pembayaran
 (
     pembayaran_id      varchar(100) not null,
     tanggal_pembayaran timestamp,
-    nominal_bayar      bigint,
+    total_bayar        bigint,
     status             varchar(100),
     keterangan         varchar(255),
-    jurnal_pembelian_id varchar(100) not null,
+#     jurnal_pembelian_id varchar(100) not null,
     create_at          timestamp,
     update_modified_at timestamp,
-    primary key (pembayaran_id),
-    foreign key fk_jurnalpembelian_like_pembayaran (jurnal_pembelian_id) references jurnal_pembelian (jurnal_pembelian_id)
+    primary key (pembayaran_id)
+#     foreign key fk_jurnalpembelian_like_pembayaran (jurnal_pembelian_id) references jurnal_pembelian (jurnal_pembelian_id)
 ) engine = InnoDB;
 
 desc pembayaran;
 select * from pembayaran;
 
+delete from pembayaran;
+drop table pembayaran;
+
 create table jurnal_pembelian_like_pembayaran
 (
     jurnal_pembelian_id varchar(100) not null,
     pembayaran_id       varchar(100) not null,
+    total_bayar        bigint,
     foreign key fk_jurnalpembelian_like_pembayaran (jurnal_pembelian_id) references jurnal_pembelian (jurnal_pembelian_id),
     foreign key fk_jurnalpembelian_pembayaran_like_pembayaran (pembayaran_id) references pembayaran (pembayaran_id),
     primary key (jurnal_pembelian_id, pembayaran_id)
 ) engine InnoDB;
 
+alter table jurnal_pembelian_like_pembayaran
+    rename column total_bayar to nominal_bayar;
+
+# alter table jurnal_pembelian_like_pembayaran
+#     drop constraint jurnal_pembelian_like_pembayaran_ibfk_2;
+
+alter table jurnal_pembelian_like_pembayaran
+    add constraint jurnal_pembelian_like_pembayaran_ibfk_2
+        FOREIGN KEY (pembayaran_id)
+            REFERENCES pembayaran (pembayaran_id)
+            on delete no action on update no action;
+
+show create table jurnal_pembelian_like_pembayaran;
+
 create table jurnal_penjualan_like_pembayaran
 (
     jurnal_penjualan_id varchar(100) not null,
     pembayaran_id       varchar(100) not null,
+    total_bayar        bigint,
     foreign key fk_jurnalpenjualan_like_pembayaran (jurnal_penjualan_id) references jurnal_penjualan (jurnal_penjualan_id),
     foreign key fk_jurnalpenjualan_pembayaran_like_pembayaran (pembayaran_id) references pembayaran (pembayaran_id),
     primary key (jurnal_penjualan_id, pembayaran_id)
 ) engine InnoDB;
+
+alter table jurnal_penjualan_like_pembayaran
+    rename column total_bayar to nominal_bayar;
+
+# alter table jurnal_penjualan_like_pembayaran
+#     drop constraint jurnal_penjualan_like_pembayaran_ibfk_2;
+
+alter table jurnal_penjualan_like_pembayaran
+    add constraint jurnal_penjualan_like_pembayaran_ibfk_2
+        FOREIGN KEY (pembayaran_id)
+            REFERENCES pembayaran (pembayaran_id)
+            on delete no action on update no action;
+
+show create table jurnal_penjualan_like_pembayaran;
 
 show tables;
 drop table pembayaran;

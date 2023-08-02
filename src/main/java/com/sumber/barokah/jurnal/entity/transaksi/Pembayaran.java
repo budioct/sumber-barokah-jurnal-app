@@ -32,7 +32,7 @@ public class Pembayaran {
     @Column(name = "tanggal_pembayaran")
     private LocalDateTime tanggalPembayaran;
 
-    @Column(name = "nominal_bayar")
+    @Column(name = "total_bayar")
     private Long nominalPembayaran;
 
     @Column(name = "status")
