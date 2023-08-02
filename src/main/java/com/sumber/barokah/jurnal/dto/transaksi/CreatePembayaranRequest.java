@@ -19,13 +19,13 @@ public class CreatePembayaranRequest {
 
     //private String pembayaranId;
 
-    @NotBlank
-    @Size(max = 100)
-    private String jurnalPembelianId;
+    //@NotBlank
+    //@Size(max = 100)
+    //private String jurnalPembelianId;
 
     private LocalDateTime tanggalPembayaran;
 
-    private Long nominalPembayaran;
+    private Long totalPembayaran;
 
     @Size(max = 100)
     private String status;

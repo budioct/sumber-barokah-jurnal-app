@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -13,6 +14,6 @@ public interface PembayaranRepository extends JpaRepository<Pembayaran, String>,
 
     Optional<Pembayaran> findFirstByPembayaranId(String id);
 
-    Optional<Pembayaran> findFirstByJurnalPembeliansLikeByAndPembayaranId(JurnalPembelian jurnalPembelian, String id);
+    //Optional<Pembayaran> findFirstByJurnalPembeliansLikeByAndPembayaranId(JurnalPembelian jurnalPembelian, String id);
 
 }

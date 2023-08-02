@@ -33,7 +33,7 @@ public class Pembayaran {
     private LocalDateTime tanggalPembayaran;
 
     @Column(name = "total_bayar")
-    private Long nominalPembayaran;
+    private Long totalPembayaran;
 
     @Column(name = "status")
     private String status;
@@ -50,9 +50,12 @@ public class Pembayaran {
     private Instant updateModifiedAt;
 
     //@JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id")
-    private JurnalPembelian jurnalPembeliansLikeBy;
+    //@ManyToOne
+    //@JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id")
+    //private JurnalPembelian jurnalPembeliansLikeBy;
+
+    @ManyToMany(mappedBy = "like_pembayaran0", cascade = CascadeType.DETACH)
+    private List<JurnalPembelian> like_jurnal_pembelian;
 
     //@ManyToMany(mappedBy = "likes1")
     //private List<JurnalPenjualan> jurnalPenjualansLikeBy;

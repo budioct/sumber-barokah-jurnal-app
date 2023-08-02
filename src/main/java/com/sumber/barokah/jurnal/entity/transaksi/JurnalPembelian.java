@@ -81,7 +81,15 @@ public class JurnalPembelian {
 
     // relation pembayaran
     //@JsonIgnore
-    @OneToMany(mappedBy = "jurnalPembeliansLikeBy")
-    private List<Pembayaran> like_jurnal_pembelian;
+    //@OneToMany(mappedBy = "jurnalPembeliansLikeBy")
+    //private List<Pembayaran> like_jurnal_pembelian;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "jurnal_pembelian_like_pembayaran",
+            joinColumns = @JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id"),
+            inverseJoinColumns = @JoinColumn(name = "pembayaran_id", referencedColumnName = "pembayaran_id")
+    )
+    private List<Pembayaran> like_pembayaran0;
 
 }

@@ -29,10 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -60,16 +57,16 @@ public class PembayaranServiceImpl implements PembayaranService {
 
         validationService.validate(request);
 
-        JurnalPembelian jurnalPembelian = jurnalPembelianRepository.findFirstByJurnalPembelianId(request.getJurnalPembelianId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian Not found"));
+        //JurnalPembelian jurnalPembelian = jurnalPembelianRepository.findFirstByJurnalPembelianId(request.getJurnalPembelianId())
+        //        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian Not found"));
 
         Pembayaran byr = new Pembayaran();
         byr.setPembayaranId(UUID.randomUUID().toString());
         byr.setTanggalPembayaran(request.getTanggalPembayaran());
-        byr.setNominalPembayaran(request.getNominalPembayaran());
+        byr.setTotalPembayaran(request.getTotalPembayaran());
         byr.setStatus(request.getStatus());
         byr.setKeterangan(request.getKeterangan());
-        byr.setJurnalPembeliansLikeBy(jurnalPembelian);
+//        byr.setJurnalPembeliansLikeBy(jurnalPembelian);
 
         pembayaranRepository.save(byr); // save DB
 
@@ -133,17 +130,17 @@ public class PembayaranServiceImpl implements PembayaranService {
 
         validationService.validate(request);
 
-        JurnalPembelian jurnalPembelian = jurnalPembelianRepository.findFirstByJurnalPembelianId(request.getJurnalPembelianId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian not found"));
+        //JurnalPembelian jurnalPembelian = jurnalPembelianRepository.findFirstByJurnalPembelianId(request.getJurnalPembelianId())
+        //        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian not found"));
 
-        Pembayaran byr = pembayaranRepository.findFirstByJurnalPembeliansLikeByAndPembayaranId(jurnalPembelian, request.getPembayaranId())
+        Pembayaran byr = pembayaranRepository.findFirstByPembayaranId(request.getPembayaranId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pembayaran not found"));
 
         byr.setTanggalPembayaran(request.getTanggalPembayaran());
-        byr.setNominalPembayaran(request.getNominalPembayaran());
+        byr.setTotalPembayaran(request.getTotalPembayaran());
         byr.setStatus(request.getStatus());
         byr.setKeterangan(request.getKeterangan());
-        byr.setJurnalPembeliansLikeBy(jurnalPembelian);
+        //byr.setJurnalPembeliansLikeBy(jurnalPembelian);
 
         pembayaranRepository.save(byr);
 
@@ -165,10 +162,10 @@ public class PembayaranServiceImpl implements PembayaranService {
         return PembayaranResponse.builder()
                 .pembayaranId(pembayaran.getPembayaranId())
                 .tanggalPembayaran(pembayaran.getTanggalPembayaran())
-                .nominalPembayaran(pembayaran.getNominalPembayaran())
+                .totalPembayaran(pembayaran.getTotalPembayaran())
                 .status(pembayaran.getStatus())
                 .keterangan(pembayaran.getKeterangan())
-                .jurnalPembeliansLikeBy(toJurnalPembelianResponse(pembayaran.getJurnalPembeliansLikeBy()))
+                //.jurnalPembeliansLikeBy(toJurnalPembelianResponse(pembayaran.getJurnalPembeliansLikeBy()))
                 .createAt(ConvertDate.convertToLocalDateTime(pembayaran.getCreateAt()))
                 .updateModifiedAt(ConvertDate.convertToLocalDateTime(pembayaran.getUpdateModifiedAt()))
                 .build();
