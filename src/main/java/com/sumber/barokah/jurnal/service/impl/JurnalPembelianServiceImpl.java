@@ -74,19 +74,46 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
         jp.setSupplier(supplier);
 
 //        log.info("ID Looping: {}", request.getProducts());
+        Long jumlah_total_exist = null;
+        Long jumlah_total_not_exist;
+        List<Long> jumlahTotalList = new LinkedList<>();
         List<Product> productslist = new LinkedList<>();
-        for (CreateProductJurnalPembelianRequest products : request.getCreateProducts()) {
+        if (Objects.nonNull(request.getCreateProducts())) {
+            for (CreateProductJurnalPembelianRequest products : request.getCreateProducts()) {
 
-            validationService.validate(products);
+                validationService.validate(products);
 
-            //log.info("ID Looping: {}", products.getProductId());
-            Product pdt = productRepository.findFirstByProductId(products.getProductId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found"));
-            //log.info("Product: {}", pdt);
+                //log.info("ID Looping: {}", products.getProductId());
+                Product pdt = productRepository.findFirstByProductId(products.getProductId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found"));
+                //log.info("Product: {}", pdt);
 
-            productslist.add(pdt); // List<Product> productslist
-            jp.setLike_product0(productslist); // List<Product> like_product
+                if (!(products.getDescription() == null)) {
+                    pdt.setDescription(products.getDescription());
+                }
+                if (!(products.getQuantity() == null)) {
+                    pdt.setQuantity(products.getQuantity());
+                }
+                if (!(products.getSellingPrice() == null)) {
+                    pdt.setSellingPrice(products.getSellingPrice());
+                }
+                if (products.getQuantity() != null && products.getSellingPrice() != null) {
+                    jumlah_total_exist = products.getQuantity() * products.getSellingPrice();
+                    jumlahTotalList.add(jumlah_total_exist);
+                    log.info("jumlah_total_exist=== {}", jumlah_total_exist);
+                }
+
+//                jumlah_total_not_exist = pdt.getQuantity() * pdt.getSellingPrice();
+//                jumlahTotalList.add(jumlah_total_not_exist);
+//                log.info("jumlah_total_not_exist=== {}", jumlah_total_not_exist);
+
+                productslist.add(pdt); // List<Product> productslist
+                jp.setLike_product0(productslist); // List<Product> like_product
+            }
         }
+
+        Long reduce = jumlahTotalList.stream().reduce(0L, Long::sum);
+        jp.setJumlahTotal(reduce);
 
         // add pembayaran
         List<Pembayaran> pembayaranList = new LinkedList<>();
