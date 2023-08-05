@@ -67,15 +67,15 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
         jp.setTanggalTransaksi(request.getTanggalTransaksi());
         jp.setTanggalJatuhTempo(request.getTanggalJatuhTempo());
         jp.setStatus(request.getStatus());
-        jp.setSisaTagihan(request.getSisaTagihan());
-        jp.setJumlahTotal(request.getJumlahTotal());
+        //jp.setSisaTagihan(request.getSisaTagihan());
+        jp.setJumlahTotal(0L);
         jp.setNoTransaksi(request.getNoTransaksi());
         jp.setTags(request.getTags());
-        jp.setSupplier(supplier);
+
 
 //        log.info("ID Looping: {}", request.getProducts());
-        Long jumlah_total_exist = null;
-        Long jumlah_total_not_exist;
+        Long jumlah_total_exist;
+        //Long jumlah_total_not_exist;
         List<Long> jumlahTotalList = new LinkedList<>();
         List<Product> productslist = new LinkedList<>();
         if (Objects.nonNull(request.getCreateProducts())) {
@@ -100,15 +100,14 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
                 if (products.getQuantity() != null && products.getSellingPrice() != null) {
                     jumlah_total_exist = products.getQuantity() * products.getSellingPrice();
                     jumlahTotalList.add(jumlah_total_exist);
-                    //log.info("jumlah_total_exist=== {}", jumlah_total_exist);
                 }
 
-                // jika tidak mengisi form create product // duplicate
-//                if (pdt.getQuantity() != null && pdt.getSellingPrice() != null) {
-//                    jumlah_total_not_exist = pdt.getQuantity() * pdt.getSellingPrice();
-//                    jumlahTotalList.add(jumlah_total_not_exist);
-//                    log.info("jumlah_total_not_exist=== {}", jumlah_total_not_exist);
-//                }
+                // jika tidak mengisi form create product // duplicate on list
+                //if (pdt.getQuantity() != null && pdt.getSellingPrice() != null) {
+                //    jumlah_total_not_exist = pdt.getQuantity() * pdt.getSellingPrice();
+                //    jumlahTotalList.add(jumlah_total_not_exist);
+                //    log.info("jumlah_total_not_exist=== {}", jumlah_total_not_exist);
+                //}
 
                 log.info("jumlahTotalList=== {}", jumlahTotalList);
                 productslist.add(pdt); // List<Product> productslist
@@ -116,9 +115,11 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
             }
         }
 
-        //Long reduce = jumlahTotalList.stream().distinct().reduce(0L, Long::sum); // hapus duplicate
+        //Long reduce = jumlahTotalList.stream().distinct().reduce(0L, Long::sum); // duplicate on list
         Long reduce = jumlahTotalList.stream().reduce(0L, Long::sum);
-        jp.setJumlahTotal(reduce);
+        jp.setSisaTagihan(reduce); // sisa tagihan pembelian ke supplier
+        supplier.setSaldo(reduce); // sisa tagihan pembelian ke supplier
+        jp.setSupplier(supplier);
 
         // add pembayaran
         List<Pembayaran> pembayaranList = new LinkedList<>();
