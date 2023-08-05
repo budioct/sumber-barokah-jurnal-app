@@ -71,6 +71,7 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
         jp.setJumlahTotal(0L);
         jp.setNoTransaksi(request.getNoTransaksi());
         jp.setTags(request.getTags());
+        //jp.setSupplier(supplier);
 
 
 //        log.info("ID Looping: {}", request.getProducts());
@@ -109,7 +110,6 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
                 //    log.info("jumlah_total_not_exist=== {}", jumlah_total_not_exist);
                 //}
 
-                log.info("jumlahTotalList=== {}", jumlahTotalList);
                 productslist.add(pdt); // List<Product> productslist
                 jp.setLike_product0(productslist); // List<Product> like_product
             }
@@ -123,27 +123,27 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
 
         // add pembayaran
         List<Pembayaran> pembayaranList = new LinkedList<>();
-        CreatePembayaranRequest pembayarans = request.getCreatePembayarans();
-        validationService.validate(pembayarans);
+        //CreatePembayaranRequest pembayarans = request.getCreatePembayarans();
+        //validationService.validate(pembayarans);
 
-        Pembayaran byr = new Pembayaran();
-        byr.setPembayaranId(UUID.randomUUID().toString());
-        byr.setTanggalPembayaran(pembayarans.getTanggalPembayaran());
-        byr.setTotalPembayaran(pembayarans.getTotalPembayaran());
-        byr.setStatus(pembayarans.getStatus());
-        byr.setKeterangan(pembayarans.getKeterangan());
-        byr.setCreateAt(Instant.now());
+//        Pembayaran byr = new Pembayaran();
+//        byr.setPembayaranId(UUID.randomUUID().toString());
+//        byr.setTanggalPembayaran(pembayarans.getTanggalPembayaran());
+//        byr.setTotalPembayaran(pembayarans.getTotalPembayaran());
+//        byr.setStatus(pembayarans.getStatus());
+//        byr.setKeterangan(pembayarans.getKeterangan());
+//        byr.setCreateAt(Instant.now());
 
         //log.info("byr= {}", byr);
 
-        if (Objects.nonNull(byr)) {
-            pembayaranList.add(byr);
-            jp.setLike_pembayaran0(pembayaranList);
-        } else {
-            return null;
-        }
+//        if (Objects.nonNull(byr)) {
+//            pembayaranList.add(byr);
+//            jp.setLike_pembayaran0(pembayaranList);
+//        } else {
+//            return null;
+//        }
 
-        pembayaranRepository.save(byr); // save DB
+//        pembayaranRepository.save(byr); // save DB
         jurnalPembelianRepository.save(jp); // save DB
 
         return toJurnalPembelianResponse(jp);
@@ -288,7 +288,7 @@ public class JurnalPembelianServiceImpl implements JurnalPembelianService {
                 .tags(jp.getTags())
                 .supplier(toSupplierResponse(jp.getSupplier()))
                 .products(jp.getLike_product0().stream().map(this::toProductResponse).collect(Collectors.toList()))
-                .pembayarans(jp.getLike_pembayaran0().stream().map(this::toPembayaranResponse).collect(Collectors.toList()))
+                //.pembayarans(jp.getLike_pembayaran0().stream().map(this::toPembayaranResponse).collect(Collectors.toList()))
                 .createAt(ConvertDate.convertToLocalDateTime(jp.getCreateAt()))
                 .updateModifiedAt(ConvertDate.convertToLocalDateTime(jp.getUpdateModifiedAt()))
                 .build();

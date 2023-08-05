@@ -31,7 +31,7 @@ public class CreateJurnalPembelianRequest {
     //@JsonIgnore
     private List<CreateProductJurnalPembelianRequest> createProducts;
 
-    private CreatePembayaranRequest createPembayarans;
+    //private CreatePembayaranRequest createPembayarans;
 
     @Size(max = 100)
     private String noFaktur;

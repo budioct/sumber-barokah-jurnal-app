@@ -60,7 +60,7 @@ public class JurnalPenjualan {
     private Instant updateModifiedAt;
 
     // relation customers
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customers_id", referencedColumnName = "customer_id")
     private Customer customer;
 

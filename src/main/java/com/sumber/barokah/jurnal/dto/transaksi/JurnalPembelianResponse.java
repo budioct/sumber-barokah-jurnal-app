@@ -51,6 +51,6 @@ public class JurnalPembelianResponse {
     //@JsonIgnore
     private List<ProductResponse> products;
 
-    private List<PembayaranResponse> pembayarans;
+    //private List<PembayaranResponse> pembayarans;
 
 }

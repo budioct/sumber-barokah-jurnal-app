@@ -196,14 +196,13 @@ create table jurnal_pembelian_like_pembayaran
 (
     jurnal_pembelian_id varchar(100) not null,
     pembayaran_id       varchar(100) not null,
-    total_bayar        bigint,
     foreign key fk_jurnalpembelian_like_pembayaran (jurnal_pembelian_id) references jurnal_pembelian (jurnal_pembelian_id),
     foreign key fk_jurnalpembelian_pembayaran_like_pembayaran (pembayaran_id) references pembayaran (pembayaran_id),
     primary key (jurnal_pembelian_id, pembayaran_id)
 ) engine InnoDB;
 
-alter table jurnal_pembelian_like_pembayaran
-    rename column total_bayar to nominal_bayar;
+# alter table jurnal_pembelian_like_pembayaran
+#     rename column total_bayar to nominal_bayar;
 
 # alter table jurnal_pembelian_like_pembayaran
 #     drop constraint jurnal_pembelian_like_pembayaran_ibfk_2;
@@ -220,14 +219,17 @@ create table jurnal_penjualan_like_pembayaran
 (
     jurnal_penjualan_id varchar(100) not null,
     pembayaran_id       varchar(100) not null,
-    total_bayar        bigint,
+#     total_bayar        bigint,
     foreign key fk_jurnalpenjualan_like_pembayaran (jurnal_penjualan_id) references jurnal_penjualan (jurnal_penjualan_id),
     foreign key fk_jurnalpenjualan_pembayaran_like_pembayaran (pembayaran_id) references pembayaran (pembayaran_id),
     primary key (jurnal_penjualan_id, pembayaran_id)
 ) engine InnoDB;
 
-alter table jurnal_penjualan_like_pembayaran
-    rename column total_bayar to nominal_bayar;
+# alter table jurnal_penjualan_like_pembayaran
+#     rename column total_bayar to nominal_bayar;
+
+# alter table jurnal_pembelian_like_pembayaran
+#     drop column nominal_bayar;
 
 # alter table jurnal_penjualan_like_pembayaran
 #     drop constraint jurnal_penjualan_like_pembayaran_ibfk_2;
@@ -251,6 +253,7 @@ select * from products;
 select * from jurnal_pembelian_like_product;
 select * from pembayaran;
 select * from jurnal_pembelian_like_pembayaran;
+
 
 
 select * from customers order by create_at limit 0, 10;

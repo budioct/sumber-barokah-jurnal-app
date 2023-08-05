@@ -7,6 +7,7 @@ import com.sumber.barokah.jurnal.dto.transaksi.CreatePembayaranRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.JurnalPembelianResponse;
 import com.sumber.barokah.jurnal.dto.transaksi.PembayaranResponse;
 import com.sumber.barokah.jurnal.dto.transaksi.UpdatePembayaranRequest;
+import com.sumber.barokah.jurnal.dto.transaksi.pembayaran.CreatePembayaranJurnalPembelianRequest;
 import com.sumber.barokah.jurnal.entity.master.Product;
 import com.sumber.barokah.jurnal.entity.master.Supplier;
 import com.sumber.barokah.jurnal.entity.transaksi.JurnalPembelian;
@@ -74,6 +75,70 @@ public class PembayaranServiceImpl implements PembayaranService {
         return toPembayaranResponse(byr);
     }
 
+    @Transactional
+    public PembayaranResponse createPembayaran(CreatePembayaranJurnalPembelianRequest request) {
+
+        validationService.validate(request);
+
+        Supplier supplier = supplierRepository.findFirstBySupplierId(request.getSupplierId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
+
+        JurnalPembelian jp = jurnalPembelianRepository.findFirstBySupplierAndJurnalPembelianId(supplier,request.getJurnalPembelianId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian not found"));
+
+        List<JurnalPembelian> jurnalPembelianList = new LinkedList<>();
+
+        Pembayaran byr = new Pembayaran();
+        byr.setPembayaranId(UUID.randomUUID().toString());
+        byr.setTanggalPembayaran(request.getTanggalPembayaran());
+        byr.setTotalPembayaran(request.getTotalPembayaran());
+        byr.setStatus(request.getStatus());
+        byr.setKeterangan(request.getKeterangan());
+
+//        Long sisaTagihan;
+//        Long jumlahTotal;
+//        if (Objects.nonNull(request.getCreateJurnalPembelians())) {
+//            for (CreatePembayaranJurnalPembelianRequest jurnalPembelians : request.getCreateJurnalPembelians()) {
+//
+//                validationService.validate(jurnalPembelians);
+//
+//                JurnalPembelian jp = jurnalPembelianRepository.findFirstByJurnalPembelianId(jurnalPembelians.getJurnalPembelianId())
+//                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian not found"));
+//
+//                sisaTagihan = jp.getSisaTagihan() - request.getTotalPembayaran();
+//                jumlahTotal = jp.getJumlahTotal() + request.getTotalPembayaran();
+//                jp.setSisaTagihan(sisaTagihan); // update jurnal
+//                jp.setJumlahTotal(jumlahTotal);
+//
+//                supplier.setSaldo(sisaTagihan);
+//                jp.setSupplier(supplier);
+//
+//                jurnalPembelianList.add(jp); // List<JurnalPembelian> jurnalPembelianList
+//                byr.setLike_jurnal_pembelian(jurnalPembelianList); // List<JurnalPembelian> like_jurnal_pembelian
+//
+//            }
+//        }
+
+        Long sisaTagihan = jp.getSisaTagihan() - request.getTotalPembayaran();
+        Long jumlahTotal = jp.getJumlahTotal() + request.getTotalPembayaran();
+        jp.setSisaTagihan(sisaTagihan); // update jurnal
+        jp.setJumlahTotal(jumlahTotal);
+
+        supplier.setSaldo(sisaTagihan);
+        jp.setSupplier(supplier);
+
+        jurnalPembelianList.add(jp); // List<JurnalPembelian> jurnalPembelianList
+        byr.setLike_jurnal_pembelian(jurnalPembelianList); // List<JurnalPembelian> like_jurnal_pembelian
+
+        //jurnalPembelianRepository.save(jp);
+        //supplierRepository.save(supplier);
+
+        pembayaranRepository.save(byr);
+
+        return toPembayaranResponse(byr);
+
+    }
+
     @Transactional(readOnly = true)
     public List<PembayaranResponse> list() {
 
@@ -131,8 +196,8 @@ public class PembayaranServiceImpl implements PembayaranService {
 
         validationService.validate(request);
 
-        //JurnalPembelian jurnalPembelian = jurnalPembelianRepository.findFirstByJurnalPembelianId(request.getJurnalPembelianId())
-        //        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian not found"));
+//        JurnalPembelian jurnalPembelian = jurnalPembelianRepository.findFirstByJurnalPembelianId(request.getJurnalPembelianId())
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian not found"));
 
         Pembayaran byr = pembayaranRepository.findFirstByPembayaranId(request.getPembayaranId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pembayaran not found"));
@@ -141,7 +206,7 @@ public class PembayaranServiceImpl implements PembayaranService {
         byr.setTotalPembayaran(request.getTotalPembayaran());
         byr.setStatus(request.getStatus());
         byr.setKeterangan(request.getKeterangan());
-        //byr.setJurnalPembeliansLikeBy(jurnalPembelian);
+//        byr.setJurnalPembeliansLikeBy(jurnalPembelian);
 
         pembayaranRepository.save(byr);
 
@@ -166,7 +231,8 @@ public class PembayaranServiceImpl implements PembayaranService {
                 .totalPembayaran(pembayaran.getTotalPembayaran())
                 .status(pembayaran.getStatus())
                 .keterangan(pembayaran.getKeterangan())
-                //.jurnalPembeliansLikeBy(toJurnalPembelianResponse(pembayaran.getJurnalPembeliansLikeBy()))
+                .jurnalPembeliansLikeBy(toJurnalPembelianResponse(pembayaran.getLike_jurnal_pembelian().get(0)))
+//                .jurnalPembeliansLikeBy(pembayaran.getLike_jurnal_pembelian().stream().map(this::toJurnalPembelianResponse).collect(Collectors.toList()))
                 .createAt(ConvertDate.convertToLocalDateTime(pembayaran.getCreateAt()))
                 .updateModifiedAt(ConvertDate.convertToLocalDateTime(pembayaran.getUpdateModifiedAt()))
                 .build();

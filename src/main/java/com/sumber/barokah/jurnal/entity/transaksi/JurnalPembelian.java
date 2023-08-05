@@ -66,7 +66,7 @@ public class JurnalPembelian {
     private Instant updateModifiedAt;
 
     // relation suppliers
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id", referencedColumnName = "supplier_id")
     private Supplier supplier;
 

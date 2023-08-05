@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -29,7 +30,7 @@ public class PembayaranResponse {
     private LocalDateTime updateModifiedAt;
 
     // return bukan entity tetapi dari dto nya supaya tidak error runtime exception: Could not write JSON: Infinite recursion (StackOverflowError)] with root cause
-    //private JurnalPembelianResponse jurnalPembeliansLikeBy;
+    private JurnalPembelianResponse jurnalPembeliansLikeBy;
 
     // infinite recurtion loop
     //private JurnalPembelian jurnalPembeliansLikeBy;

@@ -70,7 +70,7 @@ public class Product {
     private Instant updateModifiedAt;
 
     //@JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private Category category;
 
