@@ -54,8 +54,14 @@ public class Pembayaran {
     //@JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id")
     //private JurnalPembelian jurnalPembeliansLikeBy;
 
-//    @JsonIgnore
-    @ManyToMany(mappedBy = "like_pembayaran0", cascade = CascadeType.DETACH)
+    //@JsonIgnore
+    //@ManyToMany(mappedBy = "like_pembayaran0", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "jurnal_pembelian_like_pembayaran",
+            joinColumns = @JoinColumn(name = "pembayaran_id", referencedColumnName = "pembayaran_id"),
+            inverseJoinColumns = @JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id")
+    )
     private List<JurnalPembelian> like_jurnal_pembelian;
 
     //@ManyToMany(mappedBy = "likes1")

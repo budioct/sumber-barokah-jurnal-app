@@ -20,6 +20,7 @@ import com.sumber.barokah.jurnal.service.PembayaranService;
 import com.sumber.barokah.jurnal.service.ValidationService;
 import com.sumber.barokah.jurnal.utilities.ConvertDate;
 import jakarta.persistence.criteria.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class PembayaranServiceImpl implements PembayaranService {
 
@@ -83,7 +85,7 @@ public class PembayaranServiceImpl implements PembayaranService {
         Supplier supplier = supplierRepository.findFirstBySupplierId(request.getSupplierId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
 
-        JurnalPembelian jp = jurnalPembelianRepository.findFirstBySupplierAndJurnalPembelianId(supplier,request.getJurnalPembelianId())
+        JurnalPembelian jp = jurnalPembelianRepository.findFirstBySupplierAndJurnalPembelianId(supplier, request.getJurnalPembelianId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian not found"));
 
         List<JurnalPembelian> jurnalPembelianList = new LinkedList<>();
@@ -120,7 +122,9 @@ public class PembayaranServiceImpl implements PembayaranService {
 //        }
 
         Long sisaTagihan = jp.getSisaTagihan() - request.getTotalPembayaran();
+        log.info("{} - {} = {}", jp.getSisaTagihan(), request.getTotalPembayaran(), sisaTagihan);
         Long jumlahTotal = jp.getJumlahTotal() + request.getTotalPembayaran();
+        log.info("{} + {} = {}", jp.getJumlahTotal(), request.getTotalPembayaran(), jumlahTotal);
         jp.setSisaTagihan(sisaTagihan); // update jurnal
         jp.setJumlahTotal(jumlahTotal);
 
@@ -129,6 +133,8 @@ public class PembayaranServiceImpl implements PembayaranService {
 
         jurnalPembelianList.add(jp); // List<JurnalPembelian> jurnalPembelianList
         byr.setLike_jurnal_pembelian(jurnalPembelianList); // List<JurnalPembelian> like_jurnal_pembelian
+        log.info("List 1 === {}", jurnalPembelianList.size());
+        log.info("List 2 === {}", byr.getLike_jurnal_pembelian().size());
 
         //jurnalPembelianRepository.save(jp);
         //supplierRepository.save(supplier);
@@ -231,8 +237,8 @@ public class PembayaranServiceImpl implements PembayaranService {
                 .totalPembayaran(pembayaran.getTotalPembayaran())
                 .status(pembayaran.getStatus())
                 .keterangan(pembayaran.getKeterangan())
-                .jurnalPembeliansLikeBy(toJurnalPembelianResponse(pembayaran.getLike_jurnal_pembelian().get(0)))
-//                .jurnalPembeliansLikeBy(pembayaran.getLike_jurnal_pembelian().stream().map(this::toJurnalPembelianResponse).collect(Collectors.toList()))
+//                .jurnalPembeliansLikeBy(toJurnalPembelianResponse(pembayaran.getLike_jurnal_pembelian().get(0)))
+                .jurnalPembeliansLikeBy(pembayaran.getLike_jurnal_pembelian().stream().map(this::toJurnalPembelianResponse).collect(Collectors.toList()))
                 .createAt(ConvertDate.convertToLocalDateTime(pembayaran.getCreateAt()))
                 .updateModifiedAt(ConvertDate.convertToLocalDateTime(pembayaran.getUpdateModifiedAt()))
                 .build();

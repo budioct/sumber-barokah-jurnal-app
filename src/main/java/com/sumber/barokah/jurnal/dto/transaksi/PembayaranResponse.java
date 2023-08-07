@@ -30,7 +30,7 @@ public class PembayaranResponse {
     private LocalDateTime updateModifiedAt;
 
     // return bukan entity tetapi dari dto nya supaya tidak error runtime exception: Could not write JSON: Infinite recursion (StackOverflowError)] with root cause
-    private JurnalPembelianResponse jurnalPembeliansLikeBy;
+    private List<JurnalPembelianResponse> jurnalPembeliansLikeBy;
 
     // infinite recurtion loop
     //private JurnalPembelian jurnalPembeliansLikeBy;
