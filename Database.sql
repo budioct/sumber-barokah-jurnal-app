@@ -251,7 +251,11 @@ select * from jurnal_pembelian_like_pembayaran;
 select * from pembayaran;
 
 select * from customers;
-
+select * from jurnal_penjualan;
+select * from jurnal_penjualan_like_product;
+select * from products;
+select * from jurnal_penjualan_like_pembayaran;
+select * from pembayaran;
 
 
 select * from customers order by create_at limit 0, 10;

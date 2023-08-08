@@ -1,20 +1,23 @@
 package com.sumber.barokah.jurnal.service.impl;
 
+import com.sumber.barokah.jurnal.dto.master.CustomerResponse;
 import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
 import com.sumber.barokah.jurnal.dto.master.SupplierResponse;
-import com.sumber.barokah.jurnal.dto.transaksi.CreatePembayaranRequest;
-import com.sumber.barokah.jurnal.dto.transaksi.JurnalPembelianResponse;
-import com.sumber.barokah.jurnal.dto.transaksi.PembayaranResponse;
-import com.sumber.barokah.jurnal.dto.transaksi.UpdatePembayaranRequest;
+import com.sumber.barokah.jurnal.dto.transaksi.*;
 import com.sumber.barokah.jurnal.dto.transaksi.pembayaran.CreatePembayaranJurnalPembelianRequest;
+import com.sumber.barokah.jurnal.dto.transaksi.pembayaran.CreatePembayaranJurnalPenjualanRequest;
+import com.sumber.barokah.jurnal.entity.master.Customer;
 import com.sumber.barokah.jurnal.entity.master.Product;
 import com.sumber.barokah.jurnal.entity.master.Supplier;
 import com.sumber.barokah.jurnal.entity.transaksi.JurnalPembelian;
+import com.sumber.barokah.jurnal.entity.transaksi.JurnalPenjualan;
 import com.sumber.barokah.jurnal.entity.transaksi.Pembayaran;
+import com.sumber.barokah.jurnal.repository.master.CustomerRepository;
 import com.sumber.barokah.jurnal.repository.master.ProductRepository;
 import com.sumber.barokah.jurnal.repository.master.SupplierRepository;
 import com.sumber.barokah.jurnal.repository.transaksi.JurnalPembelianRepository;
+import com.sumber.barokah.jurnal.repository.transaksi.JurnalPenjualanRepository;
 import com.sumber.barokah.jurnal.repository.transaksi.PembayaranRepository;
 import com.sumber.barokah.jurnal.service.PembayaranService;
 import com.sumber.barokah.jurnal.service.ValidationService;
@@ -48,10 +51,16 @@ public class PembayaranServiceImpl implements PembayaranService {
     SupplierRepository supplierRepository;
 
     @Autowired
+    CustomerRepository customerRepository;
+
+    @Autowired
     ProductRepository productRepository;
 
     @Autowired
     JurnalPembelianRepository jurnalPembelianRepository;
+
+    @Autowired
+    JurnalPenjualanRepository jurnalPenjualanRepository;
 
     @Autowired
     PembayaranRepository pembayaranRepository;
@@ -78,7 +87,7 @@ public class PembayaranServiceImpl implements PembayaranService {
     }
 
     @Transactional
-    public PembayaranResponse createPembayaran(CreatePembayaranJurnalPembelianRequest request) {
+    public PembayaranJurnalPembelianResponse createPembayaranJurnalPembelian(CreatePembayaranJurnalPembelianRequest request) {
 
         validationService.validate(request);
 
@@ -97,7 +106,7 @@ public class PembayaranServiceImpl implements PembayaranService {
         byr.setStatus(request.getStatus());
         byr.setKeterangan(request.getKeterangan());
 
-        if (jp.getSisaTagihan() == 0){
+        if (jp.getSisaTagihan() == 0) {
 
         }
 
@@ -117,8 +126,47 @@ public class PembayaranServiceImpl implements PembayaranService {
 
         pembayaranRepository.save(byr);
 
-        return toPembayaranResponse(byr);
+        return toPembayaranJurnalPembelianResponse(byr);
 
+    }
+
+    @Transactional
+    public PembayaranJurnalPenjualanResponse createPembayaranJurnalPenjualan(CreatePembayaranJurnalPenjualanRequest request) {
+
+        validationService.validate(request);
+
+        Customer customer = customerRepository.findFirstByCustomerId(request.getCustomerId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+
+        JurnalPenjualan jp = jurnalPenjualanRepository.findFirstByCustomerAndJurnalPenjualanId(customer, request.getJurnalPenjualanId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Penjualan not found"));
+
+        List<JurnalPenjualan> jurnalPenjualanList = new LinkedList<>();
+
+        Pembayaran byr = new Pembayaran();
+        byr.setPembayaranId(UUID.randomUUID().toString());
+        byr.setTanggalPembayaran(request.getTanggalPembayaran());
+        byr.setTotalPembayaran(request.getTotalPembayaran());
+        byr.setStatus(request.getStatus());
+        byr.setKeterangan(request.getKeterangan());
+
+        Long sisaTagihan = jp.getSisaTagihan() - request.getTotalPembayaran();
+        Long jumlahTotal = jp.getJumlahTotal() + request.getTotalPembayaran();
+
+        jp.setSisaTagihan(sisaTagihan); // update jurnal
+        jp.setJumlahTotal(jumlahTotal);
+        //log.info("{} - {} = {}", jp.getSisaTagihan(), request.getTotalPembayaran(), sisaTagihan);
+        //log.info("{} + {} = {}", jp.getJumlahTotal(), request.getTotalPembayaran(), jumlahTotal);
+
+        customer.setSaldo(sisaTagihan);
+        jp.setCustomer(customer);
+
+        jurnalPenjualanList.add(jp); // List<JurnalPembelian> jurnalPembelianList
+        byr.setLike_jurnal_penjualan(jurnalPenjualanList); // List<JurnalPembelian> like_jurnal_pembelian
+
+        pembayaranRepository.save(byr);
+
+        return toPembayaranJurnalPenjualanResponse(byr);
     }
 
     @Transactional(readOnly = true)
@@ -205,16 +253,41 @@ public class PembayaranServiceImpl implements PembayaranService {
 
     }
 
-    private PembayaranResponse toPembayaranResponse(Pembayaran pembayaran) {
-
+    private PembayaranResponse toPembayaranResponse(Pembayaran pembayaran){
         return PembayaranResponse.builder()
                 .pembayaranId(pembayaran.getPembayaranId())
                 .tanggalPembayaran(pembayaran.getTanggalPembayaran())
                 .totalPembayaran(pembayaran.getTotalPembayaran())
                 .status(pembayaran.getStatus())
                 .keterangan(pembayaran.getKeterangan())
+                .createAt(ConvertDate.convertToLocalDateTime(pembayaran.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(pembayaran.getUpdateModifiedAt()))
+                .build();
+    }
+
+    private PembayaranJurnalPembelianResponse toPembayaranJurnalPembelianResponse(Pembayaran pembayaran) {
+            return PembayaranJurnalPembelianResponse.builder()
+                    .pembayaranId(pembayaran.getPembayaranId())
+                    .tanggalPembayaran(pembayaran.getTanggalPembayaran())
+                    .totalPembayaran(pembayaran.getTotalPembayaran())
+                    .status(pembayaran.getStatus())
+                    .keterangan(pembayaran.getKeterangan())
 //                .jurnalPembeliansLikeBy(toJurnalPembelianResponse(pembayaran.getLike_jurnal_pembelian().get(0)))
-                .jurnalPembeliansLikeBy(pembayaran.getLike_jurnal_pembelian().stream().map(this::toJurnalPembelianResponse).collect(Collectors.toList()))
+                    .jurnalPembeliansLikeBy(pembayaran.getLike_jurnal_pembelian().stream().map(this::toJurnalPembelianResponse).collect(Collectors.toList()))
+                    .createAt(ConvertDate.convertToLocalDateTime(pembayaran.getCreateAt()))
+                    .updateModifiedAt(ConvertDate.convertToLocalDateTime(pembayaran.getUpdateModifiedAt()))
+                    .build();
+
+    }
+
+    private PembayaranJurnalPenjualanResponse toPembayaranJurnalPenjualanResponse(Pembayaran pembayaran){
+        return PembayaranJurnalPenjualanResponse.builder()
+                .pembayaranId(pembayaran.getPembayaranId())
+                .tanggalPembayaran(pembayaran.getTanggalPembayaran())
+                .totalPembayaran(pembayaran.getTotalPembayaran())
+                .status(pembayaran.getStatus())
+                .keterangan(pembayaran.getKeterangan())
+                .jurnalPenjualanLikeBy(pembayaran.getLike_jurnal_penjualan().stream().map(this::toJurnalPenjualanResponse).collect(Collectors.toList()))
                 .createAt(ConvertDate.convertToLocalDateTime(pembayaran.getCreateAt()))
                 .updateModifiedAt(ConvertDate.convertToLocalDateTime(pembayaran.getUpdateModifiedAt()))
                 .build();
@@ -232,7 +305,6 @@ public class PembayaranServiceImpl implements PembayaranService {
                 .noTransaksi(jp.getNoTransaksi())
                 .tags(jp.getTags())
                 .supplier(toSupplierResponse(jp.getSupplier()))
-//                .products(jp.getLike_product().stream().map(this::toProductResponse).collect(Collectors.toList()))
                 .products(jp.getLike_product0().stream().map(this::toProductResponse).collect(Collectors.toList()))
                 .createAt(ConvertDate.convertToLocalDateTime(jp.getCreateAt()))
                 .updateModifiedAt(ConvertDate.convertToLocalDateTime(jp.getUpdateModifiedAt()))
@@ -252,6 +324,39 @@ public class PembayaranServiceImpl implements PembayaranService {
                 .createAt(ConvertDate.convertToLocalDateTime(supplier.getCreateAt()))
                 .updateModifiedAt(ConvertDate.convertToLocalDateTime(supplier.getUpdateModifiedAt()))
                 .build();
+    }
+
+    private JurnalPenjualanResponse toJurnalPenjualanResponse(JurnalPenjualan jp) {
+        return JurnalPenjualanResponse.builder()
+                .jurnalPenjualanId(jp.getJurnalPenjualanId())
+                .noFaktur(jp.getNoFaktur())
+                .tanggalTransaksi(jp.getTanggalTransaksi())
+                .tanggalJatuhTempo(jp.getTanggalJatuhTempo())
+                .status(jp.getStatus())
+                .sisaTagihan(jp.getSisaTagihan())
+                .jumlahTotal(jp.getJumlahTotal())
+                .noTransaksi(jp.getNoTransaksi())
+                .tags(jp.getTags())
+                .customer(toCustomerResponse(jp.getCustomer()))
+                .products(jp.getLike_product1().stream().map(this::toProductResponse).collect(Collectors.toList()))
+                .createAt(ConvertDate.convertToLocalDateTime(jp.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(jp.getUpdateModifiedAt()))
+                .build();
+
+    }
+
+    private CustomerResponse toCustomerResponse(Customer customer) {
+        return CustomerResponse.builder()
+                .customerId(customer.getCustomerId())
+                .name(customer.getName())
+                .company(customer.getCompany())
+                .saldo(customer.getSaldo())
+                .noHPhone(customer.getNoHPhone())
+                .email(customer.getEmail())
+                .address(customer.getAddress())
+                .createAt(ConvertDate.convertToLocalDateTime(customer.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(customer.getUpdateModifiedAt()))
+                .build(); // response
     }
 
     private ProductResponse toProductResponse(Product product) {
