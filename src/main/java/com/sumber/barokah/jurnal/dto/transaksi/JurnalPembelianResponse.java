@@ -46,11 +46,11 @@ public class JurnalPembelianResponse {
 
     private LocalDateTime updateModifiedAt;
 
-    private SupplierResponse supplier; // ke depanya di ganti DTO
+    private SupplierResponse supplier;
 
     //@JsonIgnore
     private List<ProductResponse> products;
 
-    //private List<PembayaranResponse> pembayarans;
+    //private List<PembayaranResponse> pembayarans0;
 
 }

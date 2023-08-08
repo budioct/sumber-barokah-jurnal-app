@@ -1,5 +1,6 @@
 package com.sumber.barokah.jurnal.dto.transaksi;
 
+import com.sumber.barokah.jurnal.dto.master.CustomerResponse;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
 import com.sumber.barokah.jurnal.entity.master.Customer;
 import com.sumber.barokah.jurnal.entity.master.Supplier;
@@ -40,11 +41,11 @@ public class JurnalPenjualanResponse {
 
     private LocalDateTime updateModifiedAt;
 
-    private Customer customer; // ke depanya di ganti DTO
+    private CustomerResponse customer;
 
     //@JsonIgnore
     private List<ProductResponse> products;
 
-    //private List<Pembayaran> likes0;
+    //private List<PembayaranResponse> pembayarans1;
 
 }

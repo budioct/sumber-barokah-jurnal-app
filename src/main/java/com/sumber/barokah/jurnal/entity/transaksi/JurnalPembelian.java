@@ -79,12 +79,7 @@ public class JurnalPembelian {
     )
     private List<Product> like_product0;
 
-    //@ManyToMany(cascade = CascadeType.ALL)
-    //@JoinTable(
-    //        name = "jurnal_pembelian_like_pembayaran",
-    //        joinColumns = @JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id"),
-    //        inverseJoinColumns = @JoinColumn(name = "pembayaran_id", referencedColumnName = "pembayaran_id")
-    //)
+    // relation pembayaran
     @ManyToMany(mappedBy = "like_jurnal_pembelian", cascade = CascadeType.ALL)
     private List<Pembayaran> like_pembayaran0;
 

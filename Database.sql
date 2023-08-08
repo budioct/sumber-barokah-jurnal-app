@@ -222,34 +222,35 @@ create table jurnal_penjualan_like_pembayaran
     primary key (jurnal_penjualan_id, pembayaran_id)
 ) engine InnoDB;
 
-# alter table jurnal_penjualan_like_pembayaran
-#     rename column total_bayar to nominal_bayar;
 
 # alter table jurnal_pembelian_like_pembayaran
 #     drop column nominal_bayar;
 
-# alter table jurnal_penjualan_like_pembayaran
-#     drop constraint jurnal_penjualan_like_pembayaran_ibfk_2;
+alter table jurnal_penjualan_like_pembayaran
+    drop constraint jurnal_penjualan_like_pembayaran_ibfk_2;
 
 alter table jurnal_penjualan_like_pembayaran
     add constraint jurnal_penjualan_like_pembayaran_ibfk_2
         FOREIGN KEY (pembayaran_id)
             REFERENCES pembayaran (pembayaran_id)
-            on delete no action on update no action;
+            on delete cascade on update cascade;
 
+show create table jurnal_pembelian_like_pembayaran;
 show create table jurnal_penjualan_like_pembayaran;
 
 show tables;
-drop table pembayaran;
-drop table jurnal_pembelian_like_pembayaran;
-drop table jurnal_penjualan;
-drop table jurnal_penjualan_like_pembayaran;
+# drop table pembayaran;
+# drop table jurnal_pembelian_like_pembayaran;
+# drop table jurnal_penjualan;
+# drop table jurnal_penjualan_like_pembayaran;
 
 select * from products;
 select * from jurnal_pembelian;
 select * from jurnal_pembelian_like_product;
 select * from jurnal_pembelian_like_pembayaran;
 select * from pembayaran;
+
+select * from customers;
 
 
 

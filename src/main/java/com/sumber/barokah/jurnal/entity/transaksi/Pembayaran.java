@@ -49,13 +49,7 @@ public class Pembayaran {
     @Column(name = "update_modified_at")
     private Instant updateModifiedAt;
 
-    //@JsonIgnore
-    //@ManyToOne
-    //@JoinColumn(name = "jurnal_pembelian_id", referencedColumnName = "jurnal_pembelian_id")
-    //private JurnalPembelian jurnalPembeliansLikeBy;
-
-    //@JsonIgnore
-    //@ManyToMany(mappedBy = "like_pembayaran0", cascade = CascadeType.ALL)
+    // relation jurnal_pembelian
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "jurnal_pembelian_like_pembayaran",
@@ -64,7 +58,13 @@ public class Pembayaran {
     )
     private List<JurnalPembelian> like_jurnal_pembelian;
 
-    //@ManyToMany(mappedBy = "likes1")
-    //private List<JurnalPenjualan> jurnalPenjualansLikeBy;
+    // relation jurnal_penjualan
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "jurnal_penjualan_like_pembayaran",
+            joinColumns = @JoinColumn(name = "pembayaran_id", referencedColumnName = "pembayaran_id"),
+            inverseJoinColumns = @JoinColumn(name = "jurnal_penjualan_id", referencedColumnName = "jurnal_penjualan_id")
+    )
+    private List<JurnalPenjualan> like_jurnal_penjualan;
 
 }

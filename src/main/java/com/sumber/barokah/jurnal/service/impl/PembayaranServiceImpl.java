@@ -97,47 +97,23 @@ public class PembayaranServiceImpl implements PembayaranService {
         byr.setStatus(request.getStatus());
         byr.setKeterangan(request.getKeterangan());
 
-//        Long sisaTagihan;
-//        Long jumlahTotal;
-//        if (Objects.nonNull(request.getCreateJurnalPembelians())) {
-//            for (CreatePembayaranJurnalPembelianRequest jurnalPembelians : request.getCreateJurnalPembelians()) {
-//
-//                validationService.validate(jurnalPembelians);
-//
-//                JurnalPembelian jp = jurnalPembelianRepository.findFirstByJurnalPembelianId(jurnalPembelians.getJurnalPembelianId())
-//                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jurnal Pembelian not found"));
-//
-//                sisaTagihan = jp.getSisaTagihan() - request.getTotalPembayaran();
-//                jumlahTotal = jp.getJumlahTotal() + request.getTotalPembayaran();
-//                jp.setSisaTagihan(sisaTagihan); // update jurnal
-//                jp.setJumlahTotal(jumlahTotal);
-//
-//                supplier.setSaldo(sisaTagihan);
-//                jp.setSupplier(supplier);
-//
-//                jurnalPembelianList.add(jp); // List<JurnalPembelian> jurnalPembelianList
-//                byr.setLike_jurnal_pembelian(jurnalPembelianList); // List<JurnalPembelian> like_jurnal_pembelian
-//
-//            }
-//        }
+        if (jp.getSisaTagihan() == 0){
+
+        }
 
         Long sisaTagihan = jp.getSisaTagihan() - request.getTotalPembayaran();
-        log.info("{} - {} = {}", jp.getSisaTagihan(), request.getTotalPembayaran(), sisaTagihan);
         Long jumlahTotal = jp.getJumlahTotal() + request.getTotalPembayaran();
-        log.info("{} + {} = {}", jp.getJumlahTotal(), request.getTotalPembayaran(), jumlahTotal);
+
         jp.setSisaTagihan(sisaTagihan); // update jurnal
         jp.setJumlahTotal(jumlahTotal);
+        //log.info("{} - {} = {}", jp.getSisaTagihan(), request.getTotalPembayaran(), sisaTagihan);
+        //log.info("{} + {} = {}", jp.getJumlahTotal(), request.getTotalPembayaran(), jumlahTotal);
 
         supplier.setSaldo(sisaTagihan);
         jp.setSupplier(supplier);
 
         jurnalPembelianList.add(jp); // List<JurnalPembelian> jurnalPembelianList
         byr.setLike_jurnal_pembelian(jurnalPembelianList); // List<JurnalPembelian> like_jurnal_pembelian
-        log.info("List 1 === {}", jurnalPembelianList.size());
-        log.info("List 2 === {}", byr.getLike_jurnal_pembelian().size());
-
-        //jurnalPembelianRepository.save(jp);
-        //supplierRepository.save(supplier);
 
         pembayaranRepository.save(byr);
 

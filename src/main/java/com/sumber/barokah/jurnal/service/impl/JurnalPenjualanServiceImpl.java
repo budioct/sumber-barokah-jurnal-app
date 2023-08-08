@@ -1,5 +1,6 @@
 package com.sumber.barokah.jurnal.service.impl;
 
+import com.sumber.barokah.jurnal.dto.master.CustomerResponse;
 import com.sumber.barokah.jurnal.dto.master.PageableRequest;
 import com.sumber.barokah.jurnal.dto.master.ProductResponse;
 import com.sumber.barokah.jurnal.dto.transaksi.CreateJurnalPenjualanRequest;
@@ -63,24 +64,47 @@ public class JurnalPenjualanServiceImpl implements JurnalPenjualanService {
         jp.setTanggalTransaksi(request.getTanggalTransaksi());
         jp.setTanggalJatuhTempo(request.getTanggalJatuhTempo());
         jp.setStatus(request.getStatus());
-        jp.setSisaTagihan(request.getSisaTagihan());
-        jp.setJumlahTotal(request.getJumlahTotal());
+//        jp.setSisaTagihan(request.getSisaTagihan());
+        jp.setJumlahTotal(0L);
         jp.setNoTransaksi(request.getNoTransaksi());
         jp.setTags(request.getTags());
-        jp.setCustomer(customer);
+//        jp.setCustomer(customer);
 
+        Long jumlah_total_exist;
+        List<Long> jumlahTotalList = new LinkedList<>();
         List<Product> productList = new LinkedList<>();
-        for (CreateProductJurnalPembelianRequest products : request.getCreateProducts()) {
+        if (Objects.nonNull(request.getCreateProducts())) {
+            for (CreateProductJurnalPembelianRequest products : request.getCreateProducts()) {
 
-            validationService.validate(products);
+                validationService.validate(products);
 
-            Product pdt = productRepository.findFirstByProductId(products.getProductId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found"));
+                Product pdt = productRepository.findFirstByProductId(products.getProductId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found"));
 
-            productList.add(pdt);
-            jp.setLike_product1(productList);
+                if (!(products.getDescription() == null)) {
+                    pdt.setDescription(products.getDescription());
+                }
+                if (!(products.getQuantity() == null)) {
+                    pdt.setQuantity(products.getQuantity());
+                }
+                if (!(products.getSellingPrice() == null)) {
+                    pdt.setSellingPrice(products.getSellingPrice());
+                }
+                if (products.getQuantity() != null && products.getSellingPrice() != null) {
+                    jumlah_total_exist = products.getQuantity() * products.getSellingPrice();
+                    jumlahTotalList.add(jumlah_total_exist);
+                }
 
+                productList.add(pdt); // List<Product> productslist
+                jp.setLike_product1(productList); // List<Product> productslist
+
+            }
         }
+
+        Long reduce = jumlahTotalList.stream().reduce(0L, Long::sum);
+        jp.setSisaTagihan(reduce);
+        customer.setSaldo(reduce);
+        jp.setCustomer(customer);
 
         jurnalPenjualanRepository.save(jp); // save DB
 
@@ -220,12 +244,26 @@ public class JurnalPenjualanServiceImpl implements JurnalPenjualanService {
                 .jumlahTotal(jp.getJumlahTotal())
                 .noTransaksi(jp.getNoTransaksi())
                 .tags(jp.getTags())
-                .customer(jp.getCustomer())
+                .customer(toCustomerResponse(jp.getCustomer()))
                 .products(jp.getLike_product1().stream().map(this::toProductResponse).collect(Collectors.toList()))
                 .createAt(ConvertDate.convertToLocalDateTime(jp.getCreateAt()))
                 .updateModifiedAt(ConvertDate.convertToLocalDateTime(jp.getUpdateModifiedAt()))
                 .build();
 
+    }
+
+    private CustomerResponse toCustomerResponse(Customer customer) {
+        return CustomerResponse.builder()
+                .customerId(customer.getCustomerId())
+                .name(customer.getName())
+                .company(customer.getCompany())
+                .saldo(customer.getSaldo())
+                .noHPhone(customer.getNoHPhone())
+                .email(customer.getEmail())
+                .address(customer.getAddress())
+                .createAt(ConvertDate.convertToLocalDateTime(customer.getCreateAt()))
+                .updateModifiedAt(ConvertDate.convertToLocalDateTime(customer.getUpdateModifiedAt()))
+                .build(); // response
     }
 
     private ProductResponse toProductResponse(Product product) {
