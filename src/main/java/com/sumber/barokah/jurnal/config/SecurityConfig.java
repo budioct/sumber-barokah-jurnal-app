@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,18 +21,19 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityConfig(HttpSecurity http) throws Exception {
 
         http
-                .authorizeHttpRequests(
-                        authorize -> {
-                            authorize.requestMatchers("/api/sb/auth/register").permitAll(); // allow endpoint
-                            authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll();
-                            authorize.requestMatchers("/api/**").hasRole("ADMIN");
-                        }
-                )
-                .authorizeHttpRequests().anyRequest().authenticated()
-                .and()
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
-                .csrf().disable();
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeHttpRequests(
+                        authorize -> {
+                            authorize.requestMatchers("/api/sb/auth/**").permitAll(); // allow endpoint
+                            authorize.requestMatchers(HttpMethod.GET, "/api/sb/**").permitAll();
+                            authorize.requestMatchers("/api/sb/**").hasAnyRole("ADMIN");
+                        }
+                )
+                .authorizeHttpRequests().anyRequest().authenticated();
 
         return http.build();
 
