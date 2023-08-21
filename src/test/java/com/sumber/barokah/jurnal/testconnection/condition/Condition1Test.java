@@ -1,10 +1,10 @@
-package com.sumber.barokah.jurnal.testconnection;
+package com.sumber.barokah.jurnal.testconnection.condition;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class ConditionTest {
+public class Condition1Test {
 
     @Test
     void testCondition(){
