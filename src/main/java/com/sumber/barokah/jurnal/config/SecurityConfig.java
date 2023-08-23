@@ -1,9 +1,12 @@
 package com.sumber.barokah.jurnal.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
@@ -14,15 +17,41 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
+
+import javax.sql.DataSource;
+
+
 @Configuration
 public class SecurityConfig {
 
+    private static final String SQL_LOGIN
+            = "select u.username, up.user_password, u.active " +
+            "from s_users_passwords up " +
+            "inner join s_users u on u.id = up.id_user " +
+            "where u.username = ?";
+
+    private static final String SQL_PERMISSION =
+            "select u.username, p.permission_value as authority " +
+                    "from s_users u " +
+                    "inner join s_roles r on r.id = u.id_role " +
+                    "inner join s_roles_permissions rp on rp.id_role = r.id " +
+                    "inner join s_permissions p on rp.id_permission = p.id " +
+                    "where u.username = ?";
+
+    @Autowired
+    private DataSource dataSource;
+
     @Bean
+    @Order(2)
     public SecurityFilterChain defaultSecurityConfig(HttpSecurity http) throws Exception {
 
         http
-                .httpBasic(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults())
+//                .httpBasic(Customizer.withDefaults())
+//                .formLogin(Customizer.withDefaults())
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -40,27 +69,56 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
+    @Order(1)
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize ->
+                        authorize.anyRequest().authenticated()
+                )
+                .formLogin(Customizer.withDefaults());
+        return http.build();
+    }
 
-        InMemoryUserDetailsManager data = new InMemoryUserDetailsManager();
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//
+//        InMemoryUserDetailsManager data = new InMemoryUserDetailsManager();
+//
+//        UserDetails budhi = User.withUsername("budhi")
+//                .password(passwordEncoder().encode("rahasia"))
+//                .roles("ADMIN")
+////                .authorities("read", "write")
+//                .build();
+//
+//        UserDetails agung = User.withUsername("agung")
+//                .password(passwordEncoder().encode("rahasia"))
+//                .roles("USER")
+////                .authorities("read")
+//                .build();
+//
+//        data.createUser(budhi);
+//        data.createUser(agung);
+//
+//        return data;
+//
+//    }
 
-        UserDetails budhi = User.withUsername("budhi")
-                .password(passwordEncoder().encode("rahasia"))
-                .roles("ADMIN")
-//                .authorities("read", "write")
-                .build();
+    @Bean
+    UserDetailsService users(DataSource dataSource) {
+        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
+        manager.setUsersByUsernameQuery(SQL_LOGIN);
+        manager.setAuthoritiesByUsernameQuery(SQL_PERMISSION);
+        return manager;
+    }
 
-        UserDetails agung = User.withUsername("agung")
-                .password(passwordEncoder().encode("rahasia"))
-                .roles("USER")
-//                .authorities("read")
-                .build();
+    @Bean
+    SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
 
-        data.createUser(budhi);
-        data.createUser(agung);
-
-        return data;
-
+    @Bean
+    HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 
     @Bean

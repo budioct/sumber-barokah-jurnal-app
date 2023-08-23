@@ -17,13 +17,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping(path = "/api")
 public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
 
     @PostMapping(
-            path = "/api/sb/customers",
+            path = "/sb/customers",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -40,7 +41,7 @@ public class CustomerController {
     }
 
     @GetMapping(
-            path = "/api/sb/customers",
+            path = "/sb/customers",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<List<CustomerResponse>> getList() {
@@ -56,7 +57,7 @@ public class CustomerController {
     }
 
     @GetMapping(
-            path = "/api/sb/{id}/customers",
+            path = "/sb/{id}/customers",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<CustomerResponse> get(@PathVariable(name = "id") String id) {
@@ -73,7 +74,7 @@ public class CustomerController {
     }
 
     @PutMapping(
-            path = "/api/sb/{id}/customers",
+            path = "/sb/{id}/customers",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -93,7 +94,7 @@ public class CustomerController {
     }
 
     @DeleteMapping(
-            path = "/api/sb/{id}/customers",
+            path = "/sb/{id}/customers",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<String> delete(@PathVariable(name = "id") String id) {
@@ -111,7 +112,7 @@ public class CustomerController {
 
 
     @GetMapping(
-            path = "/api/sb/customers/dynamic",
+            path = "/sb/customers/dynamic",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<List<CustomerResponse>> listPageable(@RequestParam(name = "sortField", required = false) String sortField,
@@ -140,7 +141,7 @@ public class CustomerController {
     }
 
     @GetMapping(
-            path = "/api/sb/customers/static",
+            path = "/sb/customers/static",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<List<CustomerResponse>> listPageable1(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page) {
