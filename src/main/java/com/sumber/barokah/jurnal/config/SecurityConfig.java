@@ -4,17 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -24,8 +21,8 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import javax.sql.DataSource;
 
-
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     private static final String SQL_LOGIN
@@ -43,72 +40,46 @@ public class SecurityConfig {
                     "where u.username = ?";
 
     @Autowired
-    private DataSource dataSource;
+    DataSource dataSource;
 
     @Bean
-    @Order(2)
-    public SecurityFilterChain defaultSecurityConfig(HttpSecurity http) throws Exception {
+    UserDetailsService users() {
+        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(this.dataSource);
+        manager.setUsersByUsernameQuery(SQL_LOGIN);
+        manager.setAuthoritiesByUsernameQuery(SQL_PERMISSION);
+        return manager;
+    }
 
-        http
-//                .httpBasic(Customizer.withDefaults())
-//                .formLogin(Customizer.withDefaults())
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeHttpRequests(
-                        authorize -> {
-                            authorize.requestMatchers("/api/sb/auth/**").permitAll(); // allow endpoint
-                            authorize.requestMatchers(HttpMethod.GET, "/api/sb/**").permitAll();
-                            authorize.requestMatchers("/api/sb/**").hasAnyRole("ADMIN");
-                        }
-                )
-                .authorizeHttpRequests().anyRequest().authenticated();
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
 
-        return http.build();
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(users());
+        return provider;
 
     }
 
     @Bean
     @Order(1)
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain apiSecurityConfig(HttpSecurity http) throws Exception {
+
         http
-                .authorizeHttpRequests(authorize ->
-                        authorize.anyRequest().authenticated()
-                )
-                .formLogin(Customizer.withDefaults());
+                .securityMatcher("/api/sb/**")
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
         return http.build();
+
     }
 
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//
-//        InMemoryUserDetailsManager data = new InMemoryUserDetailsManager();
-//
-//        UserDetails budhi = User.withUsername("budhi")
-//                .password(passwordEncoder().encode("rahasia"))
-//                .roles("ADMIN")
-////                .authorities("read", "write")
-//                .build();
-//
-//        UserDetails agung = User.withUsername("agung")
-//                .password(passwordEncoder().encode("rahasia"))
-//                .roles("USER")
-////                .authorities("read")
-//                .build();
-//
-//        data.createUser(budhi);
-//        data.createUser(agung);
-//
-//        return data;
-//
-//    }
-
     @Bean
-    UserDetailsService users(DataSource dataSource) {
-        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
-        manager.setUsersByUsernameQuery(SQL_LOGIN);
-        manager.setAuthoritiesByUsernameQuery(SQL_PERMISSION);
-        return manager;
+    public SecurityFilterChain htmlSecurityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .formLogin(Customizer.withDefaults());
+        return http.build();
+
     }
 
     @Bean
