@@ -1,4 +1,4 @@
-package com.sumber.barokah.jurnal.testconnection.encodedecode;
+package com.sumber.barokah.jurnal.encodedecode;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

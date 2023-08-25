@@ -1,4 +1,4 @@
-package com.sumber.barokah.jurnal.testconnection.timezonetest;
+package com.sumber.barokah.jurnal.timezonetest;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

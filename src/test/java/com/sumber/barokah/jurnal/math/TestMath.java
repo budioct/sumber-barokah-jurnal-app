@@ -1,4 +1,4 @@
-package com.sumber.barokah.jurnal.testconnection.math;
+package com.sumber.barokah.jurnal.math;
 
 import com.sumber.barokah.jurnal.dto.transaksi.CreateJurnalPembelianRequest;
 import com.sumber.barokah.jurnal.dto.transaksi.jurnalpembelian.CreateProductJurnalPembelianRequest;

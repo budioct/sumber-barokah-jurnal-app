@@ -1,4 +1,4 @@
-package com.sumber.barokah.jurnal.testconnection.encodedecode;
+package com.sumber.barokah.jurnal.encodedecode;
 
 import com.sumber.barokah.jurnal.utilities.BCrypt;
 import lombok.extern.slf4j.Slf4j;

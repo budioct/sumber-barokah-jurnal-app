@@ -1,4 +1,4 @@
-package com.sumber.barokah.jurnal.testconnection.condition;
+package com.sumber.barokah.jurnal.condition;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
