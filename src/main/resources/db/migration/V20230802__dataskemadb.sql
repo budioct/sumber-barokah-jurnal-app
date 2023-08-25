@@ -4,19 +4,15 @@ values ('r001', 'staff');
 insert into s_roles (id, name)
 values ('r002', 'manager');
 
-insert into s_users (id, username, active, id_role)
-values ('u001', 'budhi', true, 'r001');
-
-insert into s_users (id, username, active, id_role)
-values ('u002', 'mamat', true, 'r002');
-
+-- username : budhi
 -- password : rahasia
-insert into s_users_passwords (id_user, user_password)
-values ('u001', '$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy');
+insert into s_users (id, username, password, active, id_role)
+values ('u001', 'budhi','$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy', true, 'r001');
 
+-- username : mamat
 -- password : rahasia
-insert into s_users_passwords (id_user, user_password)
-values ('u002', '$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy');
+insert into s_users (id, username, password, active, id_role)
+values ('u002', 'mamat','$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy', true, 'r002');
 
 insert into s_permissions (id, permission_label, permission_value)
 values ('p001', 'Lihat Data Transaksi', 'VIEW_TRANSAKSI');

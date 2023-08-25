@@ -283,6 +283,50 @@ select * from products;
 # many to many delete from jurnal pada kunci luar tanpa merusak table refernce relasi
 delete from jurnal_penjualan where jurnal_penjualan_id in (select jurnal_penjualan_id from jurnal_penjualan_like_product where jurnal_penjualan.jurnal_penjualan_id = '7bf298c2-31ff-48dc-8517-063c8af4cc3f');
 
+show create table s_permissions;
+show create table s_roles;
+show create table s_roles_permissions;
+show create table s_users;
+
+select * from s_users;
+select * from s_roles;
+select * from s_permissions;
+select * from s_roles_permissions;
+
+# mix table s_users and password
+create table s_users
+(
+    id       varchar(36),
+    username varchar(100) not null,
+    password varchar(255) not null,
+    active   boolean      not null,
+    id_role  varchar(36)  not null,
+    primary key (id),
+    unique (username),
+    foreign key fk_users_role (id_role) references s_roles (id)
+) engine = InnoDB;
+
+insert into s_users (id, username, password, active, id_role)
+values ('u001', 'budhi','$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy', true, 'r001');
+
+insert into s_users (id, username, password, active, id_role)
+values ('u002', 'mamat','$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy', true, 'r002');
+
+select * from s_users;
+
+# query sql login
+select u.username, u.password, u.active
+from s_users u
+where u.username = 'budhi';
+
+# query sql select users with roles
+select u.username, u.password, u.active, u.id_role, sr.name, srp.id_role, srp.id_permission, sp.permission_label, sp.permission_value
+from s_users u left join s_roles sr on (u.id_role = sr.id)
+left join s_roles_permissions srp on (sr.id = srp.id_role)
+left join s_permissions sp on (srp.id_permission = sp.id)
+where u.username = 'mamat';
+
+
 
 
 
