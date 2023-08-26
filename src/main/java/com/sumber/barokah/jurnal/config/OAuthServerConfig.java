@@ -54,7 +54,7 @@ public class OAuthServerConfig {
 //        return http.formLogin(Customizer.withDefaults()).build();
 
         http.exceptionHandling(exceptions ->
-                exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
+                        exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
 
         return http.build();
@@ -62,18 +62,18 @@ public class OAuthServerConfig {
     }
 
     @Bean
-    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate){
+    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
 
         return new JdbcRegisteredClientRepository(jdbcTemplate);
 
     }
 
     @Bean
-    OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer(){
+    OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
 
         return context -> {
 //            if (context.getTokenType().getValue().equals(OidcParameterNames.ID_TOKEN)){ // scope kalau login sebagai openid
-            if (OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())){
+            if (OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())) {
                 Authentication principal = context.getPrincipal();
                 Set<String> authorities = principal.getAuthorities().stream()
                         .map(new Function<GrantedAuthority, String>() {
@@ -89,14 +89,14 @@ public class OAuthServerConfig {
     }
 
     @Bean
-    public OAuth2AuthorizationService auth2AuthorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository){
+    public OAuth2AuthorizationService auth2AuthorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
 
         return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
 
     }
 
     @Bean
-    public OAuth2AuthorizationConsentService auth2AuthorizationConsentService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository){
+    public OAuth2AuthorizationConsentService auth2AuthorizationConsentService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
 
         return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
 
