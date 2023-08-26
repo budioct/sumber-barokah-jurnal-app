@@ -289,6 +289,7 @@ show create table s_roles_permissions;
 show create table s_users;
 
 select * from s_users;
+select * from s_users_roles;
 select * from s_roles;
 select * from s_permissions;
 select * from s_roles_permissions;
@@ -300,31 +301,40 @@ create table s_users
     username varchar(100) not null,
     password varchar(255) not null,
     active   boolean      not null,
-    id_role  varchar(36)  not null,
-    primary key (id),
-    unique (username),
-    foreign key fk_users_role (id_role) references s_roles (id)
+    primary key (id)
 ) engine = InnoDB;
 
-insert into s_users (id, username, password, active, id_role)
-values ('u001', 'budhi','$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy', true, 'r001');
+create table s_users_roles(
+    id_user varchar(100) not null,
+    id_role varchar(100) not null ,
+    foreign key fk_users_roles (id_user) references s_users (id),
+    foreign key fk_roles_users (id_role) references s_roles (id),
+    primary key (id_user, id_role)
+) engine InnoDB;
 
-insert into s_users (id, username, password, active, id_role)
-values ('u002', 'mamat','$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy', true, 'r002');
+show create table s_users_roles;
+
+insert into s_users (id, username, password, active)
+values ('u001', 'budhi','$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy', true);
+
+insert into s_users (id, username, password, active)
+values ('u002', 'mamat','$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy', true);
 
 select * from s_users;
 
 # query sql login
 select u.username, u.password, u.active
-from s_users u
-where u.username = 'budhi';
+       from s_users u
+       where u.username = 'budhi';
 
-# query sql select users with roles
-select u.username, u.password, u.active, u.id_role, sr.name, srp.id_role, srp.id_permission, sp.permission_label, sp.permission_value
-from s_users u left join s_roles sr on (u.id_role = sr.id)
-left join s_roles_permissions srp on (sr.id = srp.id_role)
-left join s_permissions sp on (srp.id_permission = sp.id)
-where u.username = 'mamat';
+# query sql select users with roles authority
+select u.username, p.permission_value as authority
+                    from s_users u
+                    inner join s_users_roles sur on u.id = sur.id_user
+                    inner join s_roles r on sur.id_role = r.id
+                    inner join s_roles_permissions rp on rp.id_role = r.id
+                    inner join s_permissions p on rp.id_permission = p.id
+                    where u.username = 'jamal';
 
 
 
