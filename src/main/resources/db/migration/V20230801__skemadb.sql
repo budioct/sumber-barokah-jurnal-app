@@ -12,10 +12,16 @@ create table s_users
     username varchar(100) not null,
     password varchar(255) not null,
     active   boolean      not null,
-    id_role  varchar(36)  not null,
-    primary key (id),
-    unique (username),
-    foreign key fk_users_role (id_role) references s_roles (id)
+    primary key (id)
+);
+
+create table s_users_roles
+(
+    id_user varchar(100) not null,
+    id_role varchar(100) not null,
+    foreign key (id_user) references s_users (id),
+    foreign key (id_role) references s_roles (id),
+    primary key (id_user, id_role)
 );
 
 create table s_permissions

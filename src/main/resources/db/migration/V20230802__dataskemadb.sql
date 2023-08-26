@@ -4,21 +4,36 @@ values ('r001', 'staff');
 insert into s_roles (id, name)
 values ('r002', 'manager');
 
+insert into s_roles (id, name)
+values ('r003', 'admin');
+
 -- username : budhi
 -- password : rahasia
-insert into s_users (id, username, password, active, id_role)
-values ('u001', 'budhi','$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy', true, 'r001');
+insert into s_users (id, username, password, active)
+values ('u001', 'budhi', '$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy', true);
 
 -- username : mamat
 -- password : rahasia
-insert into s_users (id, username, password, active, id_role)
-values ('u002', 'mamat','$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy', true, 'r002');
+insert into s_users (id, username, password, active)
+values ('u002', 'mamat', '$2a$10$CM3UsAi9Miyos5rPqImbquiFsfexVx26RoxtBYr7TQvnKaW.5OLcy', true);
 
 insert into s_permissions (id, permission_label, permission_value)
 values ('p001', 'Lihat Data Transaksi', 'VIEW_TRANSAKSI');
 
 insert into s_permissions (id, permission_label, permission_value)
 values ('p002', 'Edit Data Transaksi', 'EDIT_TRANSAKSI');
+
+insert into s_permissions (id, permission_label, permission_value)
+values ('p003', 'Menambah Data Transaksi', 'POST_TRANSAKSI');
+
+insert into s_permissions (id, permission_label, permission_value)
+values ('p004', 'Hapus Data Transaksi', 'DELETE_TRANSAKSI');
+
+insert into s_users_roles (id_user, id_role)
+values ('u001', 'r001');
+
+insert into s_users_roles (id_user, id_role)
+values ('u002', 'r002');
 
 insert into s_roles_permissions (id_role, id_permission)
 values ('r001', 'p001');
@@ -28,6 +43,18 @@ values ('r002', 'p001');
 
 insert into s_roles_permissions (id_role, id_permission)
 values ('r002', 'p002');
+
+insert into s_roles_permissions (id_role, id_permission)
+values ('r003', 'p001');
+
+insert into s_roles_permissions (id_role, id_permission)
+values ('r003', 'p002');
+
+insert into s_roles_permissions (id_role, id_permission)
+values ('r003', 'p003');
+
+insert into s_roles_permissions (id_role, id_permission)
+values ('r003', 'p004');
 
 -- client name : client1
 -- client secret : abcd
