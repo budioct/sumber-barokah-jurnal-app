@@ -9,9 +9,13 @@ import com.sumber.barokah.jurnal.repository.master.users.UsersRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,19 +40,29 @@ public class UsersTest {
         Roles role = rolesRepository.findFirstByRoleId("r001")
                 .orElseThrow(() -> new RuntimeException("role not found"));
 
+        List<Roles> rolesList = new LinkedList<>();
+        rolesList.add(role);
+
         Users users = new Users();
-        users.setUserId(UUID.randomUUID().toString());
-        users.setUsername("candra");
-        users.setUser_password(passwordEncoder.encode("rahasia"));
+        users.setUsername("budhi");
         users.setActive(true);
-        users.setRole(role);
+
+        Example<Users> example = Example.of(users);
+        if (usersRepository.exists(example)) {
+
+            throw new RuntimeException("Username already created");
+        }
+
+        users.setUserId(UUID.randomUUID().toString());
+        users.setPassword(passwordEncoder.encode("rahasia"));
+        users.setRoles(rolesList);
 
         usersRepository.save(users);
 
     }
 
     @Test
-    void testUpdateUsers() {
+    void testUpdateUsersOnRoles() {
 
         Roles role = rolesRepository.findFirstByRoleId("r004")
                 .orElseThrow(() -> new RuntimeException("role not found"));
@@ -56,8 +70,10 @@ public class UsersTest {
         Users users = usersRepository.findFirstByUsername("mamat")
                 .orElseThrow(() -> new RuntimeException("user not found"));
 
+        List<Roles> rolesList = new LinkedList<>();
+        rolesList.add(role);
 //        users.setUsername("shinta");
-        users.setRole(role);
+        users.setRoles(rolesList);
 
         usersRepository.save(users);
 
@@ -108,8 +124,8 @@ public class UsersTest {
         permissionsList.add(p004);
 
         Roles roles = new Roles();
-        roles.setRoleId("r004");
-        roles.setRoleName("CEO");
+        roles.setRoleId("r005");
+        roles.setRoleName("super_admin");
         roles.setPermissions(permissionsList);
 
         rolesRepository.save(roles);
